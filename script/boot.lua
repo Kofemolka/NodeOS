@@ -3,6 +3,12 @@ print("Boot...")
 local config = require("config")
 local app = require("app")
 
+local env = {
+	conf = config,
+}
+
+app.init(env)
+
 tmr.alarm(1,1000,tmr.ALARM_AUTO, 
  function()
 	app.loop()
