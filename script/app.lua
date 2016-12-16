@@ -1,11 +1,19 @@
 local module = {}
 
 function module.init(env)
+	print("Application started")
 
-end
+	local ledOn = false
+	gpio.mode(4,gpio.OUTPUT)
 
-function module.loop()
-	--print(tmr.now())
+	tmr.alarm(0, 500, 1, function()
+		ledOn = not ledOn
+		if ledOn then
+			gpio.write(4,gpio.HIGH)
+		else
+			gpio.write(4,gpio.LOW)
+		end
+	end)
 end
 
 function module.shutdown()

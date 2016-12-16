@@ -1,8 +1,12 @@
 local module  = {}
 
-module.SSID = "SS-MOBILE"
+module.SSID = "linksys"
 module.SSPWD  = ""
 
-module.SERVER = "http://catomat.com.ua/firmware/"
+module.MQTT = {}
+module.MQTT.HOST = "m20.cloudmqtt.com"
+module.MQTT.PORT = 17690
+module.MQTT.USER = "czaauaxu"
+module.MQTT.PWD = "Fg9Kmwf-1V31"
 
 return module
