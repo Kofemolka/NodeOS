@@ -13,9 +13,12 @@ end
 
 for i, f in ipairs(files) do
 	if fileExist(f) then
-		if pcall(function() node.compile(f) end) then
+		local status, err = pcall(function() node.compile(f) end)
+		if status then
 			print("Compiled:" .. f)
 			file.remove(f)
+		else
+			print("Error compiling " .. f ..":" .. err)
 		end
 	end
 end

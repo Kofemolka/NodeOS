@@ -1,10 +1,11 @@
 print("Boot...")
 
-local config = require("config")
-local app = require("app")
+config = require("config")
+app = require("app")
 
-local env = {
+env = {
 	conf = config,
+	broker = mqtt.Client(wifi.ap.getmac(), 120, config.MQTT.USER, config.MQTT.PWD)
 }
 
 function wifi_wait_ip()  
@@ -17,8 +18,15 @@ function wifi_wait_ip()
     print("MAC address is: " .. wifi.ap.getmac())
     print("IP is "..wifi.sta.getip())
     print("====================================")
-	mqtt_start()
-    app.init(env)
+		
+	mqtt_init()    
+
+	app.init(env)
+
+	env.broker:connect(config.MQTT.HOST, config.MQTT.PORT, 0, 1, function(con) 
+        register_myself()      
+		app.onConnect(env)          
+    end) 
   end
 end
 
@@ -32,34 +40,24 @@ function wifi_start()
 end
 
 function register_myself()  
-    m:subscribe(config.ENDPOINT .. config.ID,0,function(conn)
+    env.broker:subscribe("inbox",0,function(conn)
         print("Successfully subscribed to data endpoint")
     end)
 end
 
-function mqtt_start()  
-    m = mqtt.Client(wifi.ap.getmac(), 120)
-	env.mqtt = m
+function mqtt_init()      
+	
     -- register message callback beforehand
-    m:on("message", function(conn, topic, data) 
+    env.broker:on("message", function(conn, topic, data) 
       if data ~= nil then
         print(topic .. ": " .. data)
         -- do something, we have received a message
       end
     end)
-    -- Connect to broker
-    m:connect(config.HOST, config.PORT, 0, 1, function(con) 
-        register_myself()
-        -- And then pings each 1000 milliseconds
-        tmr.stop(6)
-        tmr.alarm(6, 1000, 1, function() 
-			m:publish("outbox/ping", node.chipid(),0,0)
-		end)
-    end) 
 
+	env.broker:on("connect", function(con) print ("connected") end)
+	env.broker:on("offline", function(con) print ("offline") end)
 end
-
-wifi_start()
   
 function checkFirmware()
 	local http = require("socket.http")
@@ -101,3 +99,5 @@ function checkFirmware()
 	node.restart()
 end
 
+---
+wifi_start()
