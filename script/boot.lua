@@ -8,7 +8,9 @@ env = {
 	broker = mqtt.Client(wifi.ap.getmac(), 120, config.MQTT.USER, config.MQTT.PWD)
 }
 
-function wifi_wait_ip()  
+app.init(env)
+
+function wifi_wait_ip()
   if wifi.sta.getip()== nil then
     print("IP unavailable, Waiting...")
   else
@@ -18,86 +20,38 @@ function wifi_wait_ip()
     print("MAC address is: " .. wifi.ap.getmac())
     print("IP is "..wifi.sta.getip())
     print("====================================")
-		
-	mqtt_init()    
 
-	app.init(env)
-
-	env.broker:connect(config.MQTT.HOST, config.MQTT.PORT, 0, 1, function(con) 
-        register_myself()      
-		app.onConnect(env)          
-    end) 
+		mqtt_init()
+    end)
   end
 end
 
-function wifi_start()        
+function wifi_start()
     wifi.setmode(wifi.STATION);
     wifi.sta.config(config.SSID,config.SSPWD)
     wifi.sta.connect()
     print("Connecting to " .. config.SSID .. " ...")
     --config.SSID = nil  -- can save memory
-    tmr.alarm(1, 2500, 1, wifi_wait_ip) 
+    tmr.alarm(1, 2500, 1, wifi_wait_ip)
 end
 
-function register_myself()  
-    env.broker:subscribe("inbox",0,function(conn)
-        print("Successfully subscribed to data endpoint")
-    end)
+function register_myself()
+    env.broker:subscribe("os",0, nil)
 end
 
-function mqtt_init()      
-	
-    -- register message callback beforehand
-    env.broker:on("message", function(conn, topic, data) 
-      if data ~= nil then
-        print(topic .. ": " .. data)
-        -- do something, we have received a message
-      end
-    end)
+function mqtt_init()
+	env.broker:on("message",
+		function(conn, topic, data)
+			if data ~= nil then
+				app.onEvent(topic, data)
+			end
+		end)
 
-	env.broker:on("connect", function(con) print ("connected") end)
-	env.broker:on("offline", function(con) print ("offline") end)
-end
-  
-function checkFirmware()
-	local http = require("socket.http")
-	local remoteVer = http.request(config.SERVER .. "ver")
-	
-	if not remoteVer 
-	then
-		return
-	end
-
-	local verFile = io.open("ver", "r")
-	local localVer = 0
-	if verFile ~= nil
-	then
-		localVer = verFile:read()
-		verFile:close()
-	end
-	
-	if localVer == remoteVer
-	then
-		return
-	end
-
-	local body = http.request(config.SERVER .. "app.lua")
-	if not body 
-	then
-		return
-	end
-
-	local f = assert(io.open("app.lua", "w")) -- open in "binary" mode
-	f:write(body)
-	f:close()
-
-	verFile = assert(io.open("ver", "w"))
-	verFile:write(remoteVer)
-	verFile:close()
-
-	node.compile("app.lua")
-	node.restart()
+	env.broker:connect(config.MQTT.HOST, config.MQTT.PORT, 0, 1,
+		function(con)
+		    register_myself()
+				app.subscribe(env)
+		end)
 end
 
----
 wifi_start()

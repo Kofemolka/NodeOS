@@ -1,7 +1,7 @@
 local module  = {}
 
-module.SSID = "linksys"
-module.SSPWD  = ""
+module.SSID = "Kofemolka"
+module.SSPWD  = "Kofemolki.NET"
 
 module.MQTT = {}
 module.MQTT.HOST = "m20.cloudmqtt.com"

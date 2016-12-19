@@ -4,27 +4,23 @@ function module.init(env)
 	print("Application started")
 
 	gpio.mode(4,gpio.OUTPUT)
-	
-	env.broker:on("message", function(conn, topic, data) 
-      if data ~= nil then
-        print("App: " .. topic .. ": " .. data)
-        
-		if topic == "led" then
-			print("Topic OK")
-			if data == "1" then
-				gpio.write(4,gpio.HIGH)
-			else
-				gpio.write(4,gpio.LOW)
-			end
-		end			
-      end
-    end)	
 end
 
-function module.onConnect(env)
+function module.subscribe(env)
 	env.broker:subscribe("led",0, function(conn)
 			print("Successfully subscribed to LED topic")
-			end)		
+			end)
+end
+
+function module.onEvent(topic, data)
+	if topic == "led" then
+		print("Topic OK")
+		if data == "1" then
+			gpio.write(4,gpio.HIGH)
+		else
+			gpio.write(4,gpio.LOW)
+		end
+	end
 end
 
 function flashLed()
@@ -39,10 +35,6 @@ function flashLed()
 			gpio.write(4,gpio.LOW)
 		end
 	end)
-end
-
-function module.shutdown()
-
 end
 
 return module
