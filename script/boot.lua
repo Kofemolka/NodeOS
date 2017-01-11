@@ -1,57 +1,115 @@
 print("Boot...")
 
+local devTopic = "/dev/"
+local resetTopic = devTopic .. "reset"
+local heapTopic = devTopic .. "heap"
+local lwtTopic = devTopic .. "lwt"
+local firmTopic = devTopic .. "firmware"
+local appFile = "app.lua"
+
 config = require("config")
-app = require("app")
+
+pcall( function() app = require("app") end )
 
 env = {
 	conf = config,
-	broker = mqtt.Client(wifi.ap.getmac(), 120, config.MQTT.USER, config.MQTT.PWD)
+	broker = mqtt.Client(config.MQTT.ROOT, 120, config.MQTT.USER, config.MQTT.PWD)
 }
 
-app.init(env)
+pcall( function() app.init(env) end )
 
-function wifi_wait_ip()
+function wifiWatchDog()
+	tmr.alarm(1, 30000, tmr.ALARM_AUTO,
+		function()
+			if wifi.sta.getip()== nil then
+				wifiConnect()
+			end
+		end)
+end
+
+function wifiWaitIP()
   if wifi.sta.getip()== nil then
-    print("IP unavailable, Waiting...")
+    print("Waiting for IP ...")
   else
     tmr.stop(1)
-    print("\n====================================")
-    print("ESP8266 mode is: " .. wifi.getmode())
-    print("MAC address is: " .. wifi.ap.getmac())
-    print("IP is "..wifi.sta.getip())
-    print("====================================")
+    print("MAC: " .. wifi.ap.getmac())
+    print("IP: ".. wifi.sta.getip())
 
-		mqtt_init()
-    end)
+		mqttInit()
+		wifiWatchDog()
   end
 end
 
-function wifi_start()
-    wifi.setmode(wifi.STATION);
-    wifi.sta.config(config.SSID,config.SSPWD)
-    wifi.sta.connect()
-    print("Connecting to " .. config.SSID .. " ...")
-    --config.SSID = nil  -- can save memory
-    tmr.alarm(1, 2500, 1, wifi_wait_ip)
+function findAP(t)
+	for ssid,v in pairs(t) do
+		if config.SSID[ssid] ~= nil then
+			wifi.sta.config(ssid,config.SSID[ssid])
+			print("Connecting to " .. ssid .. " ...")
+	    wifi.sta.connect()
+			tmr.alarm(1, 2500, tmr.ALARM_AUTO, wifiWaitIP)
+			return
+		end
+	end
+
+	tmr.alarm(1, 5000, tmr.ALARM_AUTO, wifiConnect)
 end
 
-function register_myself()
-    env.broker:subscribe("os",0, nil)
+function wifiConnect()
+	print("WiFi Connect ...")
+  wifi.setmode(wifi.STATION);
+  wifi.sta.getap(findAP)
 end
 
-function mqtt_init()
+local once = false
+function mqttInit()
+	env.broker:lwt(env.conf.MQTT.ROOT .. lwtTopic, "offline", 1, 1)
 	env.broker:on("message",
 		function(conn, topic, data)
 			if data ~= nil then
-				app.onEvent(topic, data)
+				local subTopic = string.sub(topic, string.len(config.MQTT.ROOT)+1)
+				if subTopic == resetTopic then node.restart() end
+				if subTopic == firmTopic then update(data) end 
+
+				pcall( function() app.onEvent(subTopic, data) end )
 			end
 		end)
 
-	env.broker:connect(config.MQTT.HOST, config.MQTT.PORT, 0, 1,
-		function(con)
-		    register_myself()
-				app.subscribe(env)
-		end)
+env.broker:on("connect",
+	function(con)
+		print("MQTT connected")
+		env.broker:subscribe(env.conf.MQTT.ROOT .. resetTopic,0, nil)
+		env.broker:subscribe(env.conf.MQTT.ROOT .. firmTopic,0, nil)
+		pcall( function() app.subscribe(env) end )
+
+		tmr.alarm(2, 60000, tmr.ALARM_AUTO,
+			function()
+				pcall( function() env.broker:publish(env.conf.MQTT.ROOT .. heapTopic,node.heap(),0,0, nil) end )
+			end)
+	end)
+
+	if not once then
+		print("MQTT connect...")
+		env.broker:connect(config.MQTT.HOST, config.MQTT.PORT, 0, 1, nil)
+
+		once = true
+	end
 end
 
-wifi_start()
+local function update(data)
+  print("Updating...")
+  file.open(appFile, "w")
+  file.write(data)
+  file.close()
+
+  local countdown = 5
+  tmr.alarm(2, 1000, tmr.ALARM_AUTO,
+    function()
+      print("Restarting in " .. countdown)
+      countdown = countdown - 1
+      if countdown < 0 then
+        node.restart()
+      end
+    end)
+end
+
+wifiConnect()

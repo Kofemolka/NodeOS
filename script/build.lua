@@ -1,7 +1,8 @@
 local files = {
 	"config.lua",
 	"boot.lua",
-	"app.lua"}
+	"app.lua",
+	"update.lua"}
 
 function fileExist(fileName)
 	if file.open(fileName,"r") then
@@ -23,8 +24,7 @@ for i, f in ipairs(files) do
 	end
 end
 
-for k,v in pairs(file.list()) do 
+for k,v in pairs(file.list()) do
 	l = string.format("%-15s",k)
 	print(l.."   "..v.." bytes")
 end
-
