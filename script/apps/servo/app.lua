@@ -1,10 +1,15 @@
 local module = {}
 
+local settingKey = "ServoPos"
 local subTopic = "/pos"
 local servoPin = 2
 
 function module.init(env)
-  pwm.setup(servoPin, 50, 70)
+  module.env = env
+
+  local pos = env.settings.get(settingKey, 70)
+
+  pwm.setup(servoPin, 50, pos)
   pwm.start(servoPin)
 end
 
@@ -17,6 +22,7 @@ function module.onEvent(topic, data)
     local duty = tonumber(data)
     if duty >= 0 and duty <= 123 then
       pwm.setduty(servoPin, duty)
+      module.env.settings.set(settingKey, duty)
     end
   end
 end

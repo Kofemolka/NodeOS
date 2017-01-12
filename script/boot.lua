@@ -13,6 +13,7 @@ pcall( function() app = require("app") end )
 
 env = {
 	conf = config,
+	settings = require("settings"),
 	broker = mqtt.Client(config.MQTT.ROOT, 120, config.MQTT.USER, config.MQTT.PWD)
 }
 
@@ -68,7 +69,7 @@ function mqttInit()
 			if data ~= nil then
 				local subTopic = string.sub(topic, string.len(config.MQTT.ROOT)+1)
 				if subTopic == resetTopic then node.restart() end
-				if subTopic == firmTopic then update(data) end 
+				if subTopic == firmTopic then update(data) end
 
 				pcall( function() app.onEvent(subTopic, data) end )
 			end
