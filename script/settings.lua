@@ -16,7 +16,9 @@ local function loadStorage()
     end
 
     key, value = line:match("([^,]+),([^,]+)")
-    storage[key] = value
+    if key ~= nil then
+      storage[key] = value
+    end
   end
 
   file.close()
@@ -46,7 +48,7 @@ function module.get(key, defvalue)
     module.set(key, defvalue)
   end
 
-  return storage[key] 
+  return storage[key]  
 end
 
 loadStorage()

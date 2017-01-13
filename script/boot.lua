@@ -19,6 +19,23 @@ env = {
 
 pcall( function() app.init(env) end )
 
+function updateFirmware(data)
+  print("Updating...")
+  file.open(appFile, "w")
+  file.write(data)
+  file.close()
+
+  local countdown = 5
+  tmr.alarm(2, 1000, tmr.ALARM_AUTO,
+    function()
+      print("Restarting in " .. countdown)
+      countdown = countdown - 1
+      if countdown < 0 then
+        node.restart()
+      end
+    end)
+end
+
 function wifiWatchDog()
 	tmr.alarm(1, 30000, tmr.ALARM_AUTO,
 		function()
@@ -68,8 +85,9 @@ function mqttInit()
 		function(conn, topic, data)
 			if data ~= nil then
 				local subTopic = string.sub(topic, string.len(config.MQTT.ROOT)+1)
+				print("MSG> " .. subTopic .. ":" .. data)
 				if subTopic == resetTopic then node.restart() end
-				if subTopic == firmTopic then update(data) end
+				if subTopic == firmTopic then updateFirmware(data) end
 
 				pcall( function() app.onEvent(subTopic, data) end )
 			end
@@ -94,23 +112,6 @@ env.broker:on("connect",
 
 		once = true
 	end
-end
-
-local function update(data)
-  print("Updating...")
-  file.open(appFile, "w")
-  file.write(data)
-  file.close()
-
-  local countdown = 5
-  tmr.alarm(2, 1000, tmr.ALARM_AUTO,
-    function()
-      print("Restarting in " .. countdown)
-      countdown = countdown - 1
-      if countdown < 0 then
-        node.restart()
-      end
-    end)
 end
 
 wifiConnect()
