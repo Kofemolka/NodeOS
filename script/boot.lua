@@ -5,7 +5,8 @@ local resetTopic = devTopic .. "reset"
 local heapTopic = devTopic .. "heap"
 local lwtTopic = devTopic .. "lwt"
 local firmTopic = devTopic .. "firmware"
-local appFile = "app.lua"
+local firmStatusTopic = firmTopic .. "/status"
+local temp = "_temp_"
 
 config = require("config")
 
@@ -19,21 +20,76 @@ env = {
 
 pcall( function() app.init(env) end )
 
-function updateFirmware(data)
-  print("Updating...")
-  file.open(appFile, "w")
-  file.write(data)
+function cnc(fileName)
+  local sum = 0
+  if file.open(fileName, "r") == nil then
+    return nil
+  end
+
+  while true
+  do
+    line = file.readline()
+    if line == nil then
+      break
+    end
+
+    for i = 1, string.len(line) do
+      sum = sum + string.byte(line, i)
+      if sum > 65535 then
+        sum = sum - 65535
+      end
+    end
+  end
+
   file.close()
 
-  local countdown = 5
-  tmr.alarm(2, 1000, tmr.ALARM_AUTO,
-    function()
-      print("Restarting in " .. countdown)
-      countdown = countdown - 1
-      if countdown < 0 then
-        node.restart()
-      end
-    end)
+  return sum
+end
+
+function updateFirmware(data)
+  print("Updating...")
+	local state, fileName, origCnc = nil
+	local firstLine = true
+
+	for line in string.gmatch(data, "[^\r\n]+") do
+		if firstLine then
+			local split = string.gmatch(line, "[^%s]+")
+			state = split(0)
+			fileName = split(1)
+			origCnc = split(2)
+			print("State:" .. state)
+			print("File Name:" .. fileName)
+			print("Origin CNC: " .. origCnc)
+
+			firstLine = false
+
+			if state == "b" then
+				file.open(temp, "w")
+			else
+				file.open(temp, "a")
+			end
+		else
+			file.writeline(line)
+		end
+	end
+
+	file.close()
+
+	if state == "e" then
+			local fileCnc = cnc(temp)
+
+			print("File CNC: " .. fileCnc)
+
+			if tonumber(origCnc) == tonumber(fileCnc) then
+				file.rename(temp, fileName)
+				env.broker:publish(env.conf.MQTT.ROOT .. firmStatusTopic,"Updated: " .. fileName,0,0, nil)
+				tmr.alarm(1, 1000, tmr.ALARM_SINGLE,
+					function() node.restart() end)
+			else
+				env.broker:publish(env.conf.MQTT.ROOT .. firmStatusTopic,"Invalid CNC: O=" .. origCnc .. " F=" .. fileCnc,0,0, nil)
+				file.remove(temp)
+			end
+	end
 end
 
 function wifiWatchDog()
@@ -62,7 +118,7 @@ function findAP(t)
 	for ssid,v in pairs(t) do
 		if config.SSID[ssid] ~= nil then
 			wifi.sta.config(ssid,config.SSID[ssid])
-			print("Connecting to " .. ssid .. " ...")
+			print("Connecting to [" .. ssid .. "]")
 	    wifi.sta.connect()
 			tmr.alarm(1, 2500, tmr.ALARM_AUTO, wifiWaitIP)
 			return
@@ -73,7 +129,7 @@ function findAP(t)
 end
 
 function wifiConnect()
-	print("WiFi Connect ...")
+	print("WiFi Connect")
   wifi.setmode(wifi.STATION);
   wifi.sta.getap(findAP)
 end
