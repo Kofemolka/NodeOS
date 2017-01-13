@@ -46,20 +46,22 @@ function cnc(fileName)
   return sum
 end
 
+function splitString(s)
+        if s:sub(-1)~="\n" then s=s.."\n" end
+        return s:gmatch("(.-)\n")
+end
+
 function updateFirmware(data)
   print("Updating...")
 	local state, fileName, origCnc = nil
 	local firstLine = true
 
-	for line in string.gmatch(data, "[^\r\n]+") do
+	for line in splitString(data) do
 		if firstLine then
 			local split = string.gmatch(line, "[^%s]+")
 			state = split(0)
 			fileName = split(1)
 			origCnc = split(2)
-			print("State:" .. state)
-			print("File Name:" .. fileName)
-			print("Origin CNC: " .. origCnc)
 
 			firstLine = false
 
@@ -79,7 +81,7 @@ function updateFirmware(data)
 			local fileCnc = cnc(temp)
 
 			print("File CNC: " .. fileCnc)
-
+			print("Origin CNC: " .. origCnc)
 			if tonumber(origCnc) == tonumber(fileCnc) then
 				file.rename(temp, fileName)
 				env.broker:publish(env.conf.MQTT.ROOT .. firmStatusTopic,"Updated: " .. fileName,0,0, nil)
@@ -87,7 +89,7 @@ function updateFirmware(data)
 					function() node.restart() end)
 			else
 				env.broker:publish(env.conf.MQTT.ROOT .. firmStatusTopic,"Invalid CNC: O=" .. origCnc .. " F=" .. fileCnc,0,0, nil)
-				file.remove(temp)
+				--file.remove(temp)
 			end
 	end
 end
