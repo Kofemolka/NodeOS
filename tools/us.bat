@@ -1,0 +1,1 @@
+luatool.py -p %1 -b 115200 -f %2 -t %~nx2 %3

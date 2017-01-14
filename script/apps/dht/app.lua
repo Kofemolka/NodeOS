@@ -11,11 +11,10 @@ function module.init(env)
       if status == dht.OK then
         local resTemp = string.format("%d.%d", math.floor(temp),  temp_dec/100)
         local resHum = string.format("%d.%d", math.floor(humi), humi_dec/100)
-        print("Temperature: " .. resTemp)
-        print("Humidity: " .. resHum)
+        print("T: " .. resTemp .. " H: " .. resHum)
 
-        pcall( function() env.broker:publish(env.conf.MQTT.ROOT .. tempTopic,resTemp,0,0, nil) end )
-        pcall( function() env.broker:publish(env.conf.MQTT.ROOT .. humTopic,resHum,0,0, nil) end )
+        env.pub(tempTopic, resTemp)
+        env.pub(humTopic, resHum)
       elseif status == dht.ERROR_CHECKSUM then
           print( "DHT Checksum error." )
       elseif status == dht.ERROR_TIMEOUT then
@@ -24,12 +23,8 @@ function module.init(env)
     end)
 end
 
-function module.subscribe(env)
-
-end
-
-function module.onEvent(topic, data)
-
+function module.subscribe(sub)
+    
 end
 
 return module

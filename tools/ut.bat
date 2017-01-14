@@ -1,0 +1,1 @@
+luatool.py --ip %1 -f %2 -t %~nx2 %3

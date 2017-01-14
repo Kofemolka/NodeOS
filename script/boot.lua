@@ -1,116 +1,56 @@
-print("Boot...")
+print("<Boot>")
 
-local devTopic = "/dev/"
-local resetTopic = devTopic .. "reset"
-local heapTopic = devTopic .. "heap"
-local lwtTopic = devTopic .. "lwt"
-local firmTopic = devTopic .. "firmware"
-local firmStatusTopic = firmTopic .. "/status"
-local temp = "_temp_"
+local _DEV="/dev/"
+local _RESET=_DEV .. "reset"
+local _HEAP=_DEV .. "heap"
+local _STATUS=_DEV .. "status"
+local _TN=_DEV .. "telnet"
+local _IP=_DEV .. "ip"
 
-config = require("config")
+pcall(function() app=require("app") end)
 
-pcall( function() app = require("app") end )
+cfg = require("config")
+broker = mqtt.Client(cfg.MQTT.ROOT,120,cfg.MQTT.USER,cfg.MQTT.PWD)
+telnet = require("telnet")
+subs={}
 
-env = {
-	conf = config,
-	settings = require("settings"),
-	broker = mqtt.Client(config.MQTT.ROOT, 120, config.MQTT.USER, config.MQTT.PWD)
+function sub(t,c)
+	subs[t]=c
+	broker:subscribe(cfg.MQTT.ROOT .. t,0,nil)
+	--print("sub>" .. t)
+end
+
+function pub(t,d,q,r)
+	if r==nil then r=0 end
+	if q==nil then q=0 end
+	pcall(function() broker:publish(cfg.MQTT.ROOT .. t,d,q,r,nil) end)
+	--print("pub>" .. t .. ":" .. d)
+end
+
+env={
+	set = require("settings"),
+	sub = sub,
+	pub = pub
 }
 
-pcall( function() app.init(env) end )
-
-function cnc(fileName)
-  local sum = 0
-  if file.open(fileName, "r") == nil then
-    return nil
-  end
-
-  while true
-  do
-    line = file.readline()
-    if line == nil then
-      break
-    end
-
-    for i = 1, string.len(line) do
-      sum = sum + string.byte(line, i)
-      if sum > 65535 then
-        sum = sum - 65535
-      end
-    end
-  end
-
-  file.close()
-
-  return sum
-end
-
-function splitString(s)
-        if s:sub(-1)~="\n" then s=s.."\n" end
-        return s:gmatch("(.-)\n")
-end
-
-function updateFirmware(data)
-  print("Updating...")
-	local state, fileName, origCnc = nil
-	local firstLine = true
-
-	for line in splitString(data) do
-		if firstLine then
-			local split = string.gmatch(line, "[^%s]+")
-			state = split(0)
-			fileName = split(1)
-			origCnc = split(2)
-
-			firstLine = false
-
-			if state == "b" then
-				file.open(temp, "w")
-			else
-				file.open(temp, "a")
-			end
-		else
-			file.writeline(line)
-		end
-	end
-
-	file.close()
-
-	if state == "e" then
-			local fileCnc = cnc(temp)
-
-			print("File CNC: " .. fileCnc)
-			print("Origin CNC: " .. origCnc)
-			if tonumber(origCnc) == tonumber(fileCnc) then
-				file.rename(temp, fileName)
-				env.broker:publish(env.conf.MQTT.ROOT .. firmStatusTopic,"Updated: " .. fileName,0,0, nil)
-				tmr.alarm(1, 1000, tmr.ALARM_SINGLE,
-					function() node.restart() end)
-			else
-				env.broker:publish(env.conf.MQTT.ROOT .. firmStatusTopic,"Invalid CNC: O=" .. origCnc .. " F=" .. fileCnc,0,0, nil)
-				--file.remove(temp)
-			end
-	end
-end
+pcall(function() app.init(env) end)
 
 function wifiWatchDog()
-	tmr.alarm(1, 30000, tmr.ALARM_AUTO,
+	tmr.alarm(1,30000,tmr.ALARM_AUTO,
 		function()
-			if wifi.sta.getip()== nil then
+			if wifi.sta.getip()==nil then
 				wifiConnect()
 			end
 		end)
 end
 
 function wifiWaitIP()
-  if wifi.sta.getip()== nil then
-    print("Waiting for IP ...")
+  if wifi.sta.getip()==nil then
+    print("Registering...")
   else
     tmr.stop(1)
-    print("MAC: " .. wifi.ap.getmac())
-    print("IP: ".. wifi.sta.getip())
-
+    print("MAC:" .. wifi.ap.getmac())
+    print("IP:".. wifi.sta.getip())
 		mqttInit()
 		wifiWatchDog()
   end
@@ -118,16 +58,16 @@ end
 
 function findAP(t)
 	for ssid,v in pairs(t) do
-		if config.SSID[ssid] ~= nil then
-			wifi.sta.config(ssid,config.SSID[ssid])
-			print("Connecting to [" .. ssid .. "]")
+		if cfg.SSID[ssid]~=nil then
+			wifi.sta.config(ssid,cfg.SSID[ssid])
+			print("AP [" .. ssid .. "]")
 	    wifi.sta.connect()
-			tmr.alarm(1, 2500, tmr.ALARM_AUTO, wifiWaitIP)
+			tmr.alarm(1,2500,tmr.ALARM_AUTO,wifiWaitIP)
 			return
 		end
 	end
 
-	tmr.alarm(1, 5000, tmr.ALARM_AUTO, wifiConnect)
+	tmr.alarm(1,5000,tmr.ALARM_AUTO,wifiConnect)
 end
 
 function wifiConnect()
@@ -136,39 +76,44 @@ function wifiConnect()
   wifi.sta.getap(findAP)
 end
 
-local once = false
+local once=0
 function mqttInit()
-	env.broker:lwt(env.conf.MQTT.ROOT .. lwtTopic, "offline", 1, 1)
-	env.broker:on("message",
-		function(conn, topic, data)
-			if data ~= nil then
-				local subTopic = string.sub(topic, string.len(config.MQTT.ROOT)+1)
-				print("MSG> " .. subTopic .. ":" .. data)
-				if subTopic == resetTopic then node.restart() end
-				if subTopic == firmTopic then updateFirmware(data) end
-
-				pcall( function() app.onEvent(subTopic, data) end )
+	broker:lwt(cfg.MQTT.ROOT .. _STATUS,"offline",1,1)
+	broker:on("message",
+		function(c,t,d)
+			local st=string.sub(t,string.len(cfg.MQTT.ROOT)+1)
+			if subs[st]~=nil then
+				subs[st](d)
 			end
 		end)
 
-env.broker:on("connect",
+broker:on("connect",
 	function(con)
 		print("MQTT connected")
-		env.broker:subscribe(env.conf.MQTT.ROOT .. resetTopic,0, nil)
-		env.broker:subscribe(env.conf.MQTT.ROOT .. firmTopic,0, nil)
-		pcall( function() app.subscribe(env) end )
+		sub(_RESET,function(d) node.restart() end)
+		sub(_TN,function(d)
+			 if d=="on" then
+				 telnet.start()
+				 pub(_STATUS, "TelNet ON")
+			 else
+				 telnet.stop()
+				 pub(_STATUS, "TelNet OFF")
+			 end
+	  end)
+		pcall(function() app.subscribe(sub) end)
 
-		tmr.alarm(2, 60000, tmr.ALARM_AUTO,
+		pub(_STATUS,"online")
+		pub(_IP,tostring(wifi.sta.getip()))
+		tmr.alarm(2,60000,tmr.ALARM_AUTO,
 			function()
-				pcall( function() env.broker:publish(env.conf.MQTT.ROOT .. heapTopic,node.heap(),0,0, nil) end )
+				pub(_HEAP,node.heap())
 			end)
 	end)
 
-	if not once then
+	if once==0 then
 		print("MQTT connect...")
-		env.broker:connect(config.MQTT.HOST, config.MQTT.PORT, 0, 1, nil)
-
-		once = true
+		broker:connect(cfg.MQTT.HOST,cfg.MQTT.PORT,0,1,nil)
+		once=1
 	end
 end
 
