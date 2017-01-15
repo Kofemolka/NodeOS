@@ -34,6 +34,7 @@ def on_message(client, userdata, msg):
         gotIp = True
         print(str(msg.payload))
         upload(msg.payload, args.file)
+        
         sys.exit(0)
     return
 
