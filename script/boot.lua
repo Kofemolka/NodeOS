@@ -53,6 +53,7 @@ function wifiWaitIP()
     print("IP:".. wifi.sta.getip())
 		mqttInit()
 		wifiWatchDog()
+		enableTelNet(cfg.TelNetEnabled)
   end
 end
 
@@ -73,7 +74,18 @@ end
 function wifiConnect()
 	print("WiFi Connect")
   wifi.setmode(wifi.STATION);
+	wifi.sta.sethostname("Node-" .. cfg.MQTT.ROOT)
   wifi.sta.getap(findAP)
+end
+
+function enableTelNet(enable)
+	if enable then
+		telnet.start()
+ 	 pub(_STATUS, "TelNet ON")
+  else
+ 	 telnet.stop()
+ 	 pub(_STATUS, "TelNet OFF")
+  end
 end
 
 local once=0
@@ -91,19 +103,11 @@ broker:on("connect",
 	function(con)
 		print("MQTT connected")
 		sub(_RESET,function(d) node.restart() end)
-		sub(_TN,function(d)
-			 if d=="on" then
-				 telnet.start()
-				 pub(_STATUS, "TelNet ON")
-			 else
-				 telnet.stop()
-				 pub(_STATUS, "TelNet OFF")
-			 end
-	  end)
+		sub(_TN,function(d) enableTelNet(d=="on") end)
 		pcall(function() app.subscribe(sub) end)
 
 		pub(_STATUS,"online")
-		pub(_IP,tostring(wifi.sta.getip()))
+		pub(_IP,tostring(wifi.sta.getip()),0,1)
 		tmr.alarm(2,60000,tmr.ALARM_AUTO,
 			function()
 				pub(_HEAP,node.heap())

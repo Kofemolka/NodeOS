@@ -1,6 +1,7 @@
 local module = {}
 
 function module.start()
+    module.stop()
     inUse = false
     function listenFun(sock)
         module.sock = sock
