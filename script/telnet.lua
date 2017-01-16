@@ -2,34 +2,33 @@ local module = {}
 
 function module.start()
     module.stop()
-    inUse = false
-    function listenFun(sock)
-        module.sock = sock
-        if inUse then
-            sock:send("Already in use.\n")
-            sock:close()
-            return
-        end
-        inUse = true
 
-        function s_output(str)
-            if(sock ~=nil) then
-                sock:send(str)
-            end
-        end
+    function listenFun(socket)
+      local fifo = {}
+      local fifo_drained = true
 
-        node.output(s_output, 0)
+      local function sender(c)
+          if #fifo > 0 then
+              c:send(table.remove(fifo, 1))
+          else
+              fifo_drained = true
+          end
+      end
 
-        sock:on("receive",function(sock, input)
-                node.input(input)
-            end)
+      local function s_output(str)
+          table.insert(fifo, tostring(str))
+          if socket ~= nil and fifo_drained then
+              fifo_drained = false
+              sender(socket)
+          end
+      end
 
-        sock:on("disconnection",function(sock)
-                node.output(nil)
-                inUse = false
-            end)
+      node.output(s_output, 0)
+      socket:on("receive", function(c, l) node.input(l) end)
+      socket:on("disconnection", function(c) node.output(nil) end)
+      socket:on("sent", sender)
 
-        sock:send("Greetings, Master!\n> ")
+      print("Greetings, Master\n")
     end
 
     module.srv = net.createServer(net.TCP, 180)
