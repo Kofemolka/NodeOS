@@ -1,1 +1,1 @@
-for %%f in (%2\*.lua) do ut %1 %%f
+for %%f in (%2\*.lua) do upload_local %1 %%f

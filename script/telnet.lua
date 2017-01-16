@@ -1,6 +1,7 @@
 local module = {}
 
-function module.start()
+function module.start(port)
+    if port == nil then port = 23 end
     module.stop()
 
     function listenFun(socket)
@@ -32,7 +33,7 @@ function module.start()
     end
 
     module.srv = net.createServer(net.TCP, 180)
-    module.srv:listen(23, listenFun)
+    module.srv:listen(port, listenFun)
 end
 
 function module.stop()

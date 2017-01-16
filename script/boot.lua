@@ -1,4 +1,4 @@
-print("<Boot>")
+ print("<Boot>")
 
 local _DEV="/dev/"
 local _RESET=_DEV .. "reset"
@@ -53,7 +53,7 @@ function wifiWaitIP()
     print("IP:".. wifi.sta.getip())
 		mqttInit()
 		wifiWatchDog()
-		enableTelNet(cfg.TelNetEnabled)
+		enableTelNet(cfg.TelNet.Enabled)
   end
 end
 
@@ -80,12 +80,16 @@ end
 
 function enableTelNet(enable)
 	if enable then
-		telnet.start()
+		telnet.start(cfg.TelNet.Port)
  	 pub(_STATUS, "TelNet ON")
   else
  	 telnet.stop()
  	 pub(_STATUS, "TelNet OFF")
   end
+end
+
+function postIP()
+	pub(_IP,tostring(wifi.sta.getip()),0,1)
 end
 
 local once=0
@@ -107,10 +111,11 @@ broker:on("connect",
 		pcall(function() app.subscribe(sub) end)
 
 		pub(_STATUS,"online")
-		pub(_IP,tostring(wifi.sta.getip()),0,1)
+		postIP()
 		tmr.alarm(2,60000,tmr.ALARM_AUTO,
 			function()
 				pub(_HEAP,node.heap())
+				postIP()
 			end)
 	end)
 

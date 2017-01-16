@@ -4,7 +4,9 @@ module.SSID = {}
 module.SSID["Kofemolka"] = "Kofemolki.NET"
 module.SSID["Kofe.NET"] = "12341234"
 
-module.TelNetEnabled = true
+module.TelNet = {}
+module.TelNet.Enabled = true
+module.TelNet.Port = 23
 
 module.MQTT = {}
 module.MQTT.HOST = "192.168.0.104"
