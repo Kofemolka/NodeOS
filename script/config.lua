@@ -9,7 +9,7 @@ module.TelNet.Enabled = true
 module.TelNet.Port = 23
 
 module.MQTT = {}
-module.MQTT.HOST = "192.168.0.104"
+module.MQTT.HOST = "192.168.0.100"
 module.MQTT.PORT = 1883
 module.MQTT.USER = "ESP"
 module.MQTT.PWD = "1234"

@@ -1,1 +1,1 @@
-upload.py -host localhost -port 1883 -user ESP -pwd 1234 -id %1 -file %2
+upload.py -host 192.168.0.100 -port 1883 -user ESP -pwd 1234 -id %1 -file %2
