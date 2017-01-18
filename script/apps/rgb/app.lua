@@ -2,8 +2,10 @@ local module = {}
 
 local modeTopic = "/mode"
 local rgbTopic = "/rgb"
+local delayTopic = "/delay"
 local setMODE = "MODE"
 local setRGB = "RGB"
+local setDELAY = "DELAY"
 local pinR = 2
 local pinG = 1
 local pinB = 4
@@ -22,6 +24,7 @@ function module.init(env)
   pwm.start(pinG)
   pwm.start(pinB)
 
+  module.delay = env.set.get(setDELAY, 10)
   module.mode = env.set.get(setMODE, OFF)
   module.onModeChanged(module.mode)
 
@@ -32,17 +35,18 @@ end
 function module.subscribe(sub)
     sub(modeTopic, module.onModeChanged)
     sub(rgbTopic, module.onRGBChanged)
+    sub(delayTopic, module.onDelayChanged)
 end
 
 function module.onModeChanged(d)
   print("Mode: " .. d)
   if d == OFF then
-      tmr.stop(3)
+      tmr.stop(4)
       module.setClr(0,0,0)
   elseif d == CLR then
-      tmr.stop(3)
+      tmr.stop(4)
   elseif d == RUN then
-    tmr.alarm(3, 10, tmr.ALARM_AUTO, module.doRun)
+    tmr.alarm(4, module.delay, tmr.ALARM_AUTO, module.doRun)
   else return end
 
   module.mode = d
@@ -52,6 +56,7 @@ function module.onModeChanged(d)
 end
 
 function module.onRGBChanged(d)
+  if d == nil then return end
   module.rgb = d
   module.env.set.set(setRGB, d)
 
@@ -64,14 +69,20 @@ function module.onRGBChanged(d)
   module.setClr(r,g,b)
 end
 
-function module.setClr(r, g, b)
-  --print("R: " .. r .. " G: " .. g .. " B: " .. b)
+function module.onDelayChanged(d)
+  local d = tonumber(d)
+  if d == nil or d < 5 or d > 100 then return end
 
+  module.delay = d
+  module.env.set.set(setDELAY, d)
+  module.onModeChanged(module.mode)
+end
+
+function module.setClr(r, g, b)
   pwm.setduty(pinR, r)
   pwm.setduty(pinG, g)
   pwm.setduty(pinB, b)
 end
-
 
 local runState = 1
 local runR = 255
@@ -100,6 +111,5 @@ function module.doRun()
 
   module.setClr(runR, runG, runB)
 end
-
 
 return module
