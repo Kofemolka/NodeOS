@@ -6,9 +6,9 @@ local delayTopic = "/delay"
 local setMODE = "MODE"
 local setRGB = "RGB"
 local setDELAY = "DELAY"
-local pinR = 2
-local pinG = 1
-local pinB = 4
+local pinR = 1
+local pinG = 2
+local pinB = 6
 
 local OFF = "off"
 local CLR = "clr"
@@ -17,14 +17,14 @@ local RUN = "run"
 function module.init(env)
   module.env = env
 
-  pwm.setup(pinR, 1000, 256)
-  pwm.setup(pinG, 1000, 256)
-  pwm.setup(pinB, 1000, 256)
+  pwm.setup(pinR, 1000, 1023)
+  pwm.setup(pinG, 1000, 1023)
+  pwm.setup(pinB, 1000, 1023)
   pwm.start(pinR)
   pwm.start(pinG)
   pwm.start(pinB)
 
-  module.delay = env.set.get(setDELAY, 10)
+  module.delay = env.set.get(setDELAY, 100)
   module.mode = env.set.get(setMODE, OFF)
   module.onModeChanged(module.mode)
 
@@ -79,9 +79,9 @@ function module.onDelayChanged(d)
 end
 
 function module.setClr(r, g, b)
-  pwm.setduty(pinR, r)
-  pwm.setduty(pinG, g)
-  pwm.setduty(pinB, b)
+  pwm.setduty(pinR, r*4)
+  pwm.setduty(pinG, g*4)
+  pwm.setduty(pinB, b*4)
 end
 
 local runState = 1
