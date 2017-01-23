@@ -14,7 +14,7 @@ function module.init(env)
 end
 
 function module.subscribe(env)
-  env.broker:subscribe(env.conf.MQTT.ROOT .. subTopic,0, nil)
+--  env.broker:subscribe(env.conf.MQTT.ROOT .. subTopic,0, nil)
 end
 
 function module.onEvent(topic, data)
@@ -25,7 +25,7 @@ function module.onEvent(topic, data)
     end
 
     gpio.write(ledPin,state)
-    module.env.settings.set(settingKey, state)  
+    module.env.settings.set(settingKey, state)
   end
 end
 
