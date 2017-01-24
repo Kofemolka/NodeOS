@@ -14,13 +14,14 @@ public:
 
   MQTT() : client(espClient)
   {
-
+     char buf[7];
+     sprintf(buf, "%6X", ESP.getChipId());
+     devId = buf;
   }
 
   void Init()
   {
     client.setServer(mqtt_server, 1883);
-    //std::function<void(char*, uint8_t*, unsigned int)> fn = std::bind(&MQTT::callback, this, std::placeholders::_1);
     client.setCallback([=](char* topic, byte* payload, unsigned int length)
     {
       return this->callback(topic, payload, length);
@@ -37,12 +38,14 @@ public:
 
   void Subscribe(const char* topic, MsgCallback callback)
   {
-    _callbacks.insert(std::pair<String,MsgCallback>(topic,callback));
+    String t = devId + "/" + topic;
+    _callbacks.insert(std::pair<String,MsgCallback>(t,callback));
   }
 
-  void Publish(const char* topic, const char* data)
+  void Publish(const String& topic, const String& data)
   {
-    client.publish(topic, data);
+    String t = devId + "/" + topic;
+    client.publish(t.c_str(), data.c_str());
   }
 
 protected:
@@ -93,6 +96,8 @@ protected:
   }
 
 private:
+    String devId;
+
     WiFiClient espClient;
     PubSubClient client;
 
