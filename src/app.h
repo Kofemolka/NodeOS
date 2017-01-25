@@ -8,7 +8,7 @@ class App
 public:
   App(MQTT* mqtt) : mqtt(mqtt)
   {
-
+    
   }
 
   virtual void Init() {};

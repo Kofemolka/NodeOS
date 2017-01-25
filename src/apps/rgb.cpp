@@ -4,6 +4,7 @@
 #include <math.h>
 #include <app.h>
 #include <mqtt.h>
+#include <persist.h>
 #include <Ticker.h>
 
 #define R D1
@@ -17,9 +18,13 @@ class RgbApp : public App
   typedef enum {
     Run,
     Pulse,
-    Clr,
-    Off
+    Clr
   } Mode;
+
+  typedef enum {
+    On,
+    Off
+  } State;
 
   typedef struct {
       unsigned char r;
@@ -33,13 +38,27 @@ class RgbApp : public App
       float v;       // percent
   } HSV;
 
+  const char* K_MODE = "RgbApp.Mode";
+  const char* K_STATE = "RgbApp.State";
+  const char* K_COLOR = "RgbApp.Color";
+
 public:
   RgbApp(MQTT* mqtt) :
    App(mqtt)
   {
       _this = this;
+      _pulserDelta = 1;
+
       _color = { 0, 0, 0 };
-      _mode = Mode::Off;
+      _color = Persist::Inst().Get(K_COLOR, _color);
+
+      _state = State::Off;
+      _state = Persist::Inst().Get(K_STATE, _state);
+
+      _mode = Mode::Clr;
+      _mode = Persist::Inst().Get(K_MODE, _mode);
+
+      setState(_state);      
   }
 
   void Init()
@@ -51,6 +70,7 @@ public:
     mqtt->Subscribe("rgb", [=](const String& d) { this->onRgbMsg(d); });
     mqtt->Subscribe("hsb", [=](const String& d) { this->onHsbMsg(d); });
     mqtt->Subscribe("mode", [=](const String& d) { this->onModeMsg(d); });
+    mqtt->Subscribe("state", [=](const String& d) { this->onStateMsg(d); });
   }
 
   void Loop()
@@ -72,15 +92,18 @@ public:
       {
           updatePulser = false;
 
-          _v -= 0.3;
-          if( _v < 0)
+          _pulserClr.v -= _pulserDelta;
+          if( _pulserClr.v < 70.0)
           {
-            _v = 100.0;
+              _pulserDelta = -_pulserDelta;
+          }
+          if( _pulserClr.v > 100.0)
+          {
+              _pulserDelta = -_pulserDelta;
+              _pulserClr.v = 100.0;
           }
 
-          HSV hsv = rgb2hsv(_color);
-          hsv.v = _v;
-          setRGB(hsv2rgb(hsv));
+          setRGB(hsv2rgb(_pulserClr));
       }
   }
 
@@ -90,6 +113,34 @@ public:
   }
 
 private:
+  void onStateMsg(const String& d)
+  {
+      if(d == "on")
+      {
+          setState(State::On);
+      }
+      else if(d == "off")
+      {
+          setState(State::Off);
+      }
+  }
+
+  void setState(State state)
+  {
+     _state = state;
+     Persist::Inst().Put(K_STATE, _state);
+
+     if(state == State::On)
+     {
+       setMode(_mode);
+     }
+     else if(state == Off)
+     {
+       runner.detach();
+       setRGB( {0,0,0} );
+     }
+  }
+
   void onRgbMsg(const String& d)
   {
     if(d.length() < 7)
@@ -99,7 +150,8 @@ private:
       unsigned char g = strtol(d.substring(3,5).c_str(), 0, 16);
       unsigned char b = strtol(d.substring(5,7).c_str(), 0, 16);
 
-      _color = { r, g, b};
+      setColor({ r, g, b});
+      _pulserClr = rgb2hsv(_color);
 
       setRGB(_color);
   }
@@ -122,7 +174,8 @@ private:
 
       RGB rgb = hsv2rgb(hsv);
 
-      _color = rgb;
+      setColor(rgb);
+      _pulserClr = hsv;
       setRGB(rgb);
   }
 
@@ -130,100 +183,130 @@ private:
   {
       if(d == "clr")
       {
-         _mode = Mode::Clr;
-         runner.detach();
-          setRGB(_color);
+         setMode(Mode::Clr);
       }
       else if(d == "run")
       {
-          _mode = Mode::Run;
-          updateRunner = false;
-          runner.detach();
-          runner.attach_ms(30, RgbApp::runStep);
-          _h = 0.0;
-      }
-      else if(d == "off")
-      {
-         _mode = Mode::Off;
-         runner.detach();
-          setRGB( {0,0,0});
+          setMode(Mode::Run);
       }
       else if(d == "pulse")
       {
-           _mode = Mode::Pulse;
+          setMode(Mode::Pulse);
+      }
+  }
+
+  void setColor(RGB rgb)
+  {
+      _color = rgb;
+      Persist::Inst().Put(K_COLOR, _color);
+  }
+
+  void setMode(Mode mode)
+  {
+      _mode = mode;
+      Persist::Inst().Put(K_MODE, _mode);
+
+      if(_state == State::Off)
+          return;
+
+      switch(_mode)
+      {
+        case Mode::Clr:
+          runner.detach();
+          setRGB(_color);
+          break;
+
+        case Mode::Run:
+          updateRunner = false;
+          runner.detach();
+          runner.attach_ms(50, RgbApp::runStep);
+          _h = 0.0;
+          break;
+
+        case Mode::Pulse:
            updatePulser = false;
            runner.detach();
            runner.attach_ms(30, RgbApp::pulseStep);
-           _v = 100.0;
+           _pulserClr = rgb2hsv(_color);
+           break;
       }
   }
 
   void setRGB(RGB rgb)
   {
-    Serial.printf("RGB: %i %i %i\n", rgb.r, rgb.g, rgb.b);
+      //Serial.printf("RGB: %i %i %i\n", rgb.r, rgb.g, rgb.b);
 
-    analogWrite(R, rgb.r*4);
-    analogWrite(G, rgb.g*4);
-    analogWrite(B, rgb.b*4);
+      analogWrite(R, rgb.r*4);
+      analogWrite(G, rgb.g*4);
+      analogWrite(B, rgb.b*4);
   }
 
   static void runStep()
   {
-     _this->updateRunner = true;
+      _this->updateRunner = true;
   }
 
   static void pulseStep()
   {
-     _this->updatePulser = true;
+      _this->updatePulser = true;
   }
 
   HSV rgb2hsv(RGB in)
   {
-    float Max;
-	  float Min;
-	  float Chroma;
-	  HSV hsv;
+      float rf = ((float)in.r)/255;
+      float gf = ((float)in.g)/255;
+      float bf = ((float)in.b)/255;
 
-	  Min = min(min(in.r, in.g), in.b);
-	  Max = max(max(in.r, in.g), in.b);
-	  Chroma = (Max - Min)/255;
+      float max = fmax(rf, fmax(gf, bf));
+      float min = fmin(rf, fmin(gf, bf));
 
-  	//If Chroma is 0, then S is 0 by definition, and H is undefined but 0 by convention.
-  	if(Chroma != 0)
-  	{
-  		if(in.r == Max)
-  		{
-  			hsv.h = (in.g - in.b) / Chroma / 255;
+      float d = max - min;
 
-  			if(hsv.h < 0.0)
-  			{
-  				hsv.h += 6.0;
-  			}
-  		}
-  		else if(in.g == Max)
-  		{
-  			hsv.h = ((in.b - in.r) / Chroma / 255) + 2.0;
-  		}
-  		else //in.b == Max
-  		{
-  			hsv.h = ((in.r - in.g) / Chroma / 255) + 4.0;
-  		}
+      HSV hsv;
+      if( d == 0.0 )
+      {
+          hsv.h = 0;
+      }
+      else if(max == rf)
+      {
+          if(gf > bf)
+          {
+              hsv.h = (gf - bf) / d;
+          }
+          else
+          {
+              hsv.h = (gf - bf) / d + 6.0;
+          }
+      }
+      else if(max == gf)
+      {
+          hsv.h = (bf - rf) / d + 2.0;
+      }
+      else
+      {
+          hsv.h = (rf - gf) / d + 4.0;
+      }
+      hsv.h *= 60;
 
-  		hsv.h *= 60.0;
-  		hsv.s = 100*Chroma / Max / 255;
-  	}
+      if(max == 0)
+      {
+          hsv.s = 0;
+      }
+      else
+      {
+          hsv.s = 100 * (1 - min/max);
+      }
+      hsv.v = max * 100;
 
-  	hsv.v = 100*Max/255;
+      /*Serial.print("HSV: ");
+      Serial.print(hsv.h);
+      Serial.print(" ");
+      Serial.print(hsv.s);
+      Serial.print(" ");
+      Serial.print(hsv.v);
+      Serial.println("");*/
 
-    Serial.print("HSV: ");
-    Serial.print(hsv.h);
-    Serial.print(" ");
-    Serial.print(hsv.s);
-    Serial.print(" ");
-    Serial.print(hsv.v);
-    Serial.println("");
-
-  	return hsv;
+    	return hsv;
   }
 
   RGB hsv2rgb(HSV in)
@@ -244,32 +327,37 @@ private:
       float x = c * (1 - abs(hh%2 - 1 + fractpart));
 
       switch(hh) {
-      case 0: r = c; g = x; b = 0;           break;
-      case 1: r = x; g = c; b = 0;           break;
-      case 2: r = 0; g = c; b = x;           break;
-      case 3: r = 0; g = x; b = c;           break;
-      case 4: r = x; g = 0; b = c;           break;
-      case 5:
-      default: r = c; g = 0; b = x;          break;
+        case 0: r = c; g = x; b = 0;           break;
+        case 1: r = x; g = c; b = 0;           break;
+        case 2: r = 0; g = c; b = x;           break;
+        case 3: r = 0; g = x; b = c;           break;
+        case 4: r = x; g = 0; b = c;           break;
+        case 5:
+        default: r = c; g = 0; b = x;          break;
       }
 
       float m = v - c;
 
-      return { (r+m)*255, (g+m)*255, (b+m)*255 };
+      return { (unsigned char)((r+m)*255),
+               (unsigned char)((g+m)*255),
+               (unsigned char)((b+m)*255) };
   }
 
   RGB _color;
   Mode _mode;
+  State _state;
   Ticker runner;
   float _h;
   bool updateRunner;
-  float _v;
+
+  HSV _pulserClr;
+  float _pulserDelta;
   bool updatePulser;
 };
 
 App* CreateApp(MQTT* mqtt)
 {
-  return new RgbApp(mqtt);
+    return new RgbApp(mqtt);
 }
 
 RgbApp* RgbApp::_this = 0;

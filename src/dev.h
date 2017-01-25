@@ -11,6 +11,11 @@ class Device
   static const int led = D0;
   static Device* _inst;
 
+  Device()
+  {
+
+  }
+  
 public:
   static Device& Inst()
   {
