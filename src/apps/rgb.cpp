@@ -58,7 +58,7 @@ public:
       _mode = Mode::Clr;
       _mode = Persist::Inst().Get(K_MODE, _mode);
 
-      setState(_state);      
+      setState(_state);
   }
 
   void Init()
@@ -93,7 +93,7 @@ public:
           updatePulser = false;
 
           _pulserClr.v -= _pulserDelta;
-          if( _pulserClr.v < 70.0)
+          if( _pulserClr.v < 50.0)
           {
               _pulserDelta = -_pulserDelta;
           }

@@ -50,7 +50,7 @@ public:
 
 protected:
   void  callback(char* topic, byte* payload, unsigned int length) {
-    Serial.print("Message arrived [");
+    Serial.print("Msg [");
     Serial.print(topic);
     Serial.print("] ");
     String d;
@@ -69,28 +69,22 @@ protected:
   }
 
   void reconnect() {
-    // Loop until we're reconnected
     if (!client.connected()) {
-      Serial.print("Attempting MQTT connection...");
-      // Create a random client ID
-      String clientId = "ESP8266Client-";
-      clientId += String(random(0xffff), HEX);
-      // Attempt to connect
+      Serial.print("MQTT...");
+      String clientId = "NodeOS-" + devId;
+
       if (client.connect(clientId.c_str(),mqtt_user, mqtt_pwd)) {
         Serial.println("connected");
-        // Once connected, publish an announcement...
 
         for (auto it=_callbacks.begin(); it!=_callbacks.end(); ++it)
         {
           client.subscribe((*it).first.c_str());
         }
-        // ... and resubscribe
-
-      } else {
+      }
+      else
+      {
         Serial.print("failed, rc=");
         Serial.print(client.state());
-        Serial.println(" try again in 5 seconds");
-        // Wait 5 seconds before retrying
       }
     }
   }

@@ -1,0 +1,3 @@
+GPIO15 - D8 - 0
+GPIO0 - D3 - 1
+GPIO2 - D4 - 1
