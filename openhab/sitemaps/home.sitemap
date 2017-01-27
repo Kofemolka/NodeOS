@@ -47,19 +47,19 @@ sitemap demo label="Home"
 		{
 	      Frame label="RGB"
 	      {
-	        Switch item=131BB8_Reset  icon="network"
+	        Switch item=131BB8_Reset  icon="network" mappings=[ON="OK"]
 	        Text item=131BB8_Heap
 	      }
 	
 	      Frame label="Main Room"
 	      {
-	        Switch item=13113F_Reset  icon="network"
+	        Switch item=13113F_Reset  icon="network" mappings=[ON="OK"]
 	        Text item=13113F_Heap
 	      }
 	
 	      Frame label="Bath"
 	      {
-				   Switch item=131DA0_Reset  icon="network"
+				   Switch item=131DA0_Reset  icon="network" mappings=[ON="OK"]
 	         Text item=131DA0_Heap
 	      }
 		}
