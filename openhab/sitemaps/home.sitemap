@@ -1,0 +1,58 @@
+sitemap demo label="Home"
+{
+    Frame label="Room" icon="sofa"
+	{
+        Text item=Main_room_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
+		Text item=Main_room_hum icon="humidity"
+    }
+
+    Frame label="Bath" icon="faucet"
+	   {
+        Text item=Bath_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
+		Text item=Bath_hum icon="humidity"
+		Switch item=Bath_fan label="Fan" icon="fan"
+		Switch item=Bath_move label="Move" icon="siren"
+    }
+
+    Frame label="Media"
+	 {
+        Switch item=TV_Switch label="TV" icon="television" mappings=[OFF="On/Off"]
+    		Switch item=Audio_Switch label="Audio" icon="soundvolume"
+
+    		Group item=Audio icon="soundvolume"
+    		{
+    			Switch item=Audio_Volume mappings=[DOWN="-", UP="+"]
+    		}
+
+    		Group item=Main_Room_RGB label="Backlight" icon="rgb"
+    		{
+    			Switch item=Main_Room_RGB_State label="Backlight" icon="slider"
+    			Selection item=Main_Room_RGB_Mode label="Mode" icon="smiley" mappings=[clr="Color", run="Run", pulse="Pulse"]
+    			Colorpicker item=Main_Room_RGB_Color label="Color"
+    		}
+    }
+
+	Frame label="System"
+	{
+		Group item=Nodes label="Nodes" icon="network"
+		{
+      Frame label="RGB"
+      {
+        Switch item=131BB8_Reset
+        Text item=131BB8_Heap
+      }
+
+      Frame label="Main Room"
+      {
+        Switch item=13113F_Reset
+        Text item=13113F_Heap
+      }
+
+      Frame label="Bath"
+      {
+			   Switch item=131DA0_Reset
+         Text item=131DA0_Heap
+      }
+		}
+	}
+}
