@@ -1,7 +1,7 @@
-String 131BB8_Reset "Reset" (Nodes, 131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]"}
-String 13113F_Reset "Reset" (Nodes, 13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]"}
-String 131DA0_Reset "Reset" (Nodes, 131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]"}
+String 131BB8_Reset "Reset" (131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]", autoupdate="false"}
+String 13113F_Reset "Reset" (13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]", autoupdate="false"}
+String 131DA0_Reset "Reset" (131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
 
-Number 131BB8_Heap "Heap" (Nodes, 131BB8) {mqtt="<[RPI:131BB8/dev/heap:state:default]"}
-Number 13113F_Heap "Heap" (Nodes, 13113F) {mqtt="<[RPI:13113F/dev/heap:state:default]"}
-Number 131DA0_Heap "Heap" (Nodes, 131DA0) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
+Number 131BB8_Heap "Heap [%d]" (131BB8) {mqtt="<[RPI:131BB8/dev/heap:state:default]"}
+Number 13113F_Heap "Heap [%d]" (13113F) {mqtt="<[RPI:13113F/dev/heap:state:default]"}
+Number 131DA0_Heap "Heap [%d]" (131DA0) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}

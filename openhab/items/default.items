@@ -1,15 +1,12 @@
-Number Main_room_temp "Temp [%.1f]" {mqtt="<[RPI:13113F/temp:state:default]"}
-Number Main_room_hum "Hum [%.1f]" {mqtt="<[RPI:13113F/hum:state:default]"}
+Number Main_room_temp "Temp [%.1f °C]" {mqtt="<[RPI:13113F/temp:state:default]"}
+Number Main_room_hum "Hum [%.1f %%]" {mqtt="<[RPI:13113F/hum:state:default]"}
 
-Number Bath_temp "Temp [%.1f]" {mqtt="<[RPI:131DA0/temp:state:default]"}
-Number Bath_hum "Hum [%.1f]" {mqtt="<[RPI:131DA0/hum:state:default]"}
+Number Bath_temp "Temp [%.1f °C]" {mqtt="<[RPI:131DA0/temp:state:default]"}
+Number Bath_hum "Hum [%.1f %%]" {mqtt="<[RPI:131DA0/hum:state:default]"}
 Switch Bath_fan {mqtt=">[RPI:131DA0/fan:command:ON:1],>[RPI:131DA0/fan:command:OFF:0]"}
 Switch Bath_move {mqtt="<[RPI:131DA0/move:command:ON:1],<[RPI:131DA0/move:command:OFF:0]"}
 
-Switch TV_Switch  {mqtt=">[RPI:13113F/tv:command:*:default]" autoupdate="false"}
-Switch Audio_Switch {mqtt=">[RPI:13113F/audio:command:ON:08E750AF],>[RPI:13113F/audio:command:OFF:08E750AF]"}
-
-Rollershutter Audio_Volume "Volume" (Audio) {mqtt=">[RPI:13113F/audio:command:UP:08E700FF],>[RPI:13113F/audio:command:DOWN:08E7807F]"}
+Switch TV_Switch  {mqtt=">[RPI:13113F/tv:command:*:default]", autoupdate="false"}
 
 Switch Main_Room_RGB_State (Main_Room_RGB)	{mqtt=">[RPI:131BB8/state:command:ON:on],>[RPI:131BB8/state:command:OFF:off]"}
 String Main_Room_RGB_Mode  (Main_Room_RGB)	{mqtt=">[RPI:131BB8/mode:command:*:default]"}

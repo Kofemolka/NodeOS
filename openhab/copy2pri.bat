@@ -1,0 +1,1 @@
+xcopy . \\Rpi\\OpenHAB\ /S /E /Y /R

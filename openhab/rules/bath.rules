@@ -2,22 +2,38 @@ var Number havingFan = 0
 
 rule "BathAutoFan"
 when   
-    Time cron "0/10 * * * * ?"   // every minute
+    Time cron "0/10 * * * * ?"   //every 10 secs
 then   
     if(havingFan == 0)
     {
-	if(Bath_hum.state > 70) 
-	{
-	    sendCommand(Bath_fan, ON)
-	    havingFan = 1
-	}                    
+		if(Bath_hum.state > 70) 
+		{
+		    sendCommand(Bath_fan, ON)
+		    havingFan = 1
+		}                    
     }
     else
     {
-	if(Bath_hum.state < 40) 
-	{
-	    sendCommand(Bath_fan, OFF)
-	    havingFan = 0
-	}
+		if(Bath_hum.state < 40) 
+		{
+		    sendCommand(Bath_fan, OFF)
+		    havingFan = 0
+		}
     }
+end
+
+rule "Ventilate - On"
+when   
+    Time cron "0 0 2,7,11,18 * * * ?"
+then
+	sendCommand(Bath_fan, ON)
+	havingFan = 1
+end
+
+rule "Ventilate - Off"
+when   
+    Time cron "0 5 2,7,11,18 * * * ?"
+then
+	sendCommand(Bath_fan, OFF)
+	havingFan = 0
 end
