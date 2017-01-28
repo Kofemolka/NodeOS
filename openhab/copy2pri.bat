@@ -1,1 +1,1 @@
-xcopy . \\Rpi\\OpenHAB\ /S /E /Y /R
+xcopy . \\Raspberrypi\\OpenHAB\ /S /E /Y /R

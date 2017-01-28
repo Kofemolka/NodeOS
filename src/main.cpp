@@ -22,7 +22,7 @@ void setup() {
   Serial.println("Booting...");
 
   app = CreateApp(&mqtt);
-  
+
   wifi.init();
   ota.Init();
   mqtt.Init();

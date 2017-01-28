@@ -42,10 +42,10 @@ public:
     _callbacks.insert(std::pair<String,MsgCallback>(t,callback));
   }
 
-  void Publish(const String& topic, const String& data)
+  void Publish(const String& topic, const String& data, bool retain = false)
   {
     String t = devId + "/" + topic;
-    client.publish(t.c_str(), data.c_str());
+    client.publish(t.c_str(), data.c_str(), retain);
   }
 
 protected:
