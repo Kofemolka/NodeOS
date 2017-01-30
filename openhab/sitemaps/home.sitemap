@@ -68,7 +68,7 @@ sitemap home label="Home"
 	      Frame label="RGB"
 	      {
 	        Switch item=131BB8_Reset  icon="network"
-	        Text item=131BB8_Heap
+	        Text item=131BB8_Heap          
 	      }
 
 	      Frame label="Main Room"

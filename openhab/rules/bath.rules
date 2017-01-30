@@ -1,5 +1,5 @@
-var Number havingFan = 0;
-var Number forcedFan = 0;
+var Number havingFan = 0
+var Number forcedFan = 0
 
 rule "BathAutoFan"
 when
@@ -7,19 +7,19 @@ when
 then
     if(havingFan == 0)
     {
-  		if(Bath_hum.state > 70)
-  		{
-  		    sendCommand(Bath_fan, ON)
-  		    havingFan = 1
-  		}
+    		if(Bath_hum.state > 70)
+    		{
+    		    sendCommand(Bath_fan, ON)
+    		    havingFan = 1
+    		}
     }
     else
     {
-  		if(Bath_hum.state < 45 && !forcedFan)
-  		{
-  		    sendCommand(Bath_fan, OFF)
-  		    havingFan = 0
-  		}
+    		if(Bath_hum.state < 45 && forcedFan == 0)
+    		{
+    		    sendCommand(Bath_fan, OFF)
+    		    havingFan = 0
+    		}
     }
 end
 
@@ -27,17 +27,17 @@ rule "Ventilate - On"
 when
     Time cron "0 0 1,7,11,18,21 * * ?" //at desired hours
 then
-	sendCommand(Bath_fan, ON)
-  forcedFan = 1
+  	sendCommand(Bath_fan, ON)
+    forcedFan = 1
 end
 
 rule "Ventilate - Off"
 when
     Time cron "0 5 1,7,11,18,21 * * ?" //blow for 5 minutes
 then
-	if(!havingFan)
-  {
-    sendCommand(Bath_fan, OFF)
-  }
-  forcedFan = 0
+  	if(havingFan == 0)
+    {
+        sendCommand(Bath_fan, OFF)
+    }
+    forcedFan = 0
 end
