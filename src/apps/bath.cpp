@@ -37,8 +37,6 @@ public:
       tickerDht.attach(30, BathApp::markTimeToRead);
 
       wasMovement = false;
-      timeToSendMovement = false;
-      tickerMovement.attach(5, BathApp::sendMovement);
 
       mqtt->Subscribe("fan", [=](const String& d) { this->onFan(d); });
   }
@@ -51,13 +49,11 @@ public:
           readDht();
       }
 
-      wasMovement = wasMovement || digitalRead(MovePin);
-
-      if(timeToSendMovement)
+      bool movement = digitalRead(MovePin);
+      if(wasMovement != movement)
       {
-          timeToSendMovement = false;
-          mqtt->Publish("move", wasMovement ? "1" : "0");
-          wasMovement = false;
+          mqtt->Publish("move", movement ? "1" : "0");
+          wasMovement = movement;
       }
   }
 
@@ -77,12 +73,7 @@ protected:
   static void markTimeToRead()
   {
     _this->timeToRead = true;
-  }
-
-  static void sendMovement()
-  {
-      _this->timeToSendMovement = true;
-  }
+  }  
 
   void readDht()
   {
@@ -108,11 +99,10 @@ protected:
 
 private:
     Ticker tickerDht;
-    Ticker tickerMovement;
     DHT dht;
     bool timeToRead;
+
     bool wasMovement;
-    bool timeToSendMovement;
 };
 
 App* CreateApp(MQTT* mqtt)

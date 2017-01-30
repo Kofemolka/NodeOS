@@ -1,7 +1,15 @@
-String 131BB8_Reset "Reset" (131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]", autoupdate="false"}
-String 13113F_Reset "Reset" (13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]", autoupdate="false"}
-String 131DA0_Reset "Reset" (131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
+Group Nodes "Nodes"
+Group 131BB8 (Nodes)
+Group 13113F (Nodes)
+Group 131DA0 (Nodes)
+Group 131C31 (Nodes)
+
+String 131BB8_Reset "Reset" (131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]", channel="network:device:131BB8:online"}
+String 13113F_Reset "Reset" (13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]", channel="network:device:13113F:online"}
+String 131DA0_Reset "Reset" (131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", channel="network:device:131DA0:online"}
+String 131C31_Reset "Reset" (131C31) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", channel="network:device:131C31:online"}
 
 Number 131BB8_Heap "Heap [%d]" (131BB8) {mqtt="<[RPI:131BB8/dev/heap:state:default]"}
 Number 13113F_Heap "Heap [%d]" (13113F) {mqtt="<[RPI:13113F/dev/heap:state:default]"}
 Number 131DA0_Heap "Heap [%d]" (131DA0) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
+Number 131C31_Heap "Heap [%d]" (131C31) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}

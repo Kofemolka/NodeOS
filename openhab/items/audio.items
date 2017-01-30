@@ -1,3 +1,4 @@
+Group Audio 
 Switch Audio_Switch  "Audio"    (Audio) {mqtt=">[RPI:13113F/audio:command:*:08E750AF]", autoupdate="false"}
 String Audio_Volume  "Volume"   (Audio) {mqtt=">[RPI:13113F/audio:command:UP:08E700FF], >[RPI:13113F/audio:command:DOWN:08E7807F]", autoupdate="false"}
 String Audio_Front   "Front"    (Audio) {mqtt=">[RPI:13113F/audio:command:UP:08E78877], >[RPI:13113F/audio:command:DOWN:08E728D7]", autoupdate="false"}

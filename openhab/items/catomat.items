@@ -1,0 +1,7 @@
+Group Catomat "Catomat"
+String Cat_Mode  		"Mode"    				(Catomat) 	{mqtt=">[RPI:131C31/mode:command:*:default], <[RPI:131C31/status/mode:state:default]"}
+String Cat_Eat 			"Eat" 					(Catomat) 	{mqtt=">[RPI:131C31/cmd:command:*:1]", autoupdate="false"}
+String Cat_Drink 		"Drink" 				(Catomat) 	{mqtt=">[RPI:131C31/cmd:command:*:2]", autoupdate="false"}
+Number Cat_Food_Amount 	"Food amount [%d gr]" 	(Catomat) 	{mqtt=">[RPI:131C31/adj/food:command:*:default]"}
+Number Cat_Water_Amount "Water amount [%d ml]"  (Catomat) 	{mqtt=">[RPI:131C31/adj/water:command:*:default]"}
+Number Cat_Visit  		"Last Visit [%d sec]" 	(Catomat)	{mqtt="<[RPI:131C31/status/visit:state:default]"}

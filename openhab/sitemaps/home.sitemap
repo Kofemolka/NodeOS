@@ -1,24 +1,39 @@
-sitemap demo label="Home"
+sitemap home label="Home"
 {
-    Frame label="Room" icon="sofa"
-	{
+    Frame label="Kitchen"
+    {
+        Group item=Catomat
+        {
+            Switch item=Cat_Mode mappings=[2="Man",1="Auto"]
+            Switch item=Cat_Eat mappings=[1="Serve"]
+            Switch item=Cat_Drink mappings=[1="Serve"]
+            Text item=Cat_Visit icon="clock"
+            Setpoint item=Cat_Food_Amount minValue=5 maxValue=50 step=1
+            Setpoint item=Cat_Water_Amount minValue=5 maxValue=50 step=1
+        }
+    }
+    Frame label="Room"
+	  {
         Text item=Main_room_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
-		Text item=Main_room_hum icon="humidity"
+		    Text item=Main_room_hum icon="humidity"
     }
 
-    Frame label="Bath" icon="faucet"
-	   {
-        Text item=Bath_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
-		Text item=Bath_hum icon="humidity"
-		Switch item=Bath_fan label="Fan" icon="fan"
-		Switch item=Bath_move label="" icon="motion"
+    Frame label="Bath"
+	  {
+      Text item=Bath_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
+      Text item=Bath_hum icon="humidity"
+      Switch item=Bath_fan label="Fan" icon="fan"
+      Switch item=Bath_move label="" icon="motion"
     }
+
+
 
     Frame label="Media"
 	 {
         	Switch item=TV_Switch label="TV" icon="television" mappings=[ON="On/Off"]
     		Switch item=Audio_Switch label="Audio" icon="soundvolume" mappings=[ON="On/Off"]
-		    
+		    Switch item=PC_Switch label="PC" icon="player"
+
     		Group item=Audio icon="soundvolume"
     		{
 		          Switch item=Audio_Switch icon="soundvolume_mute" mappings=[ON="On/Off"]
@@ -33,7 +48,7 @@ sitemap demo label="Home"
 		          Switch item=Audio_Mode    mappings=[5.1="5.1", PC="PC", AUX="AUX"]
     		}
 
-    		Group item=Main_Room_RGB label="Backlight" icon="rgb"
+    		Group item=Main_Room_RGB icon="rgb"
     		{
     			Switch item=Main_Room_RGB_State label="Backlight" icon="slider"
     			Selection item=Main_Room_RGB_Mode label="Mode" icon="smiley" mappings=[clr="Color", run="Run", pulse="Pulse"]
@@ -43,23 +58,28 @@ sitemap demo label="Home"
 
 	Frame label="System"
 	{
-		Group item=Nodes label="Nodes" icon="settings"
+		Group item=Nodes icon="settings"
 		{
+        Frame label="Catomat"
+        {
+          Switch item=131C31_Reset  icon="network"
+          Text item=131C31_Heap
+        }
 	      Frame label="RGB"
 	      {
-	        Switch item=131BB8_Reset  icon="network" mappings=[ON="OK"]
+	        Switch item=131BB8_Reset  icon="network"
 	        Text item=131BB8_Heap
 	      }
-	
+
 	      Frame label="Main Room"
 	      {
-	        Switch item=13113F_Reset  icon="network" mappings=[ON="OK"]
+	        Switch item=13113F_Reset  icon="network"
 	        Text item=13113F_Heap
 	      }
-	
+
 	      Frame label="Bath"
 	      {
-				   Switch item=131DA0_Reset  icon="network" mappings=[ON="OK"]
+				   Switch item=131DA0_Reset  icon="network"
 	         Text item=131DA0_Heap
 	      }
 		}

@@ -1,0 +1,5 @@
+network:device:PC [ hostname="192.168.0.99", port="0", retry="1", timeout="5000", refresh_interval="60000", use_system_ping="false", dhcplisten="false" ]
+network:device:13113F [ hostname="192.168.0.104", port="0", retry="1", timeout="5000", refresh_interval="60000", use_system_ping="false", dhcplisten="false" ]
+network:device:131BB8 [ hostname="192.168.0.102", port="0", retry="1", timeout="5000", refresh_interval="60000", use_system_ping="false", dhcplisten="false" ]
+network:device:131DA0 [ hostname="192.168.0.101", port="0", retry="1", timeout="5000", refresh_interval="60000", use_system_ping="false", dhcplisten="false" ]
+network:device:131C31 [ hostname="192.168.0.109", port="0", retry="1", timeout="5000", refresh_interval="60000", use_system_ping="false", dhcplisten="false" ]
