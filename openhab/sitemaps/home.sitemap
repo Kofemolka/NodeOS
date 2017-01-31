@@ -23,7 +23,8 @@ sitemap home label="Home"
       Text item=Bath_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
       Text item=Bath_hum icon="humidity"
       Switch item=Bath_fan label="Fan" icon="fan"
-      Switch item=Bath_move label="" icon="motion"
+      Text item=Bath_move label="" icon="motion"
+      Text item=Bath_door label="Door" icon="door"
     }
 
 

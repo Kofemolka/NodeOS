@@ -10,6 +10,7 @@
 #define MovePin D6
 #define DhtPin D5
 #define RelayPin D2
+#define DoorPin D1
 
 class BathApp : public App
 {
@@ -26,6 +27,7 @@ public:
 
   void Init()
   {
+      pinMode(DoorPin, INPUT);
       pinMode(MovePin, INPUT);
       pinMode(RelayPin, OUTPUT);
 
@@ -33,27 +35,43 @@ public:
       digitalWrite(RelayPin, Persist::Inst().Get(K_RELAY, def));
 
       dht.begin();
-      timeToRead = false;
-      tickerDht.attach(30, BathApp::markTimeToRead);
+      timeToReadDht = false;
+      tickerDht.attach(30, BathApp::markReadDht);
 
+      doorState = false;
       wasMovement = false;
+      timeToReadState = false;
+      tickerState.attach(1, BathApp::markReadState);
 
       mqtt->Subscribe("fan", [=](const String& d) { this->onFan(d); });
   }
 
   void Loop()
   {
-      if( timeToRead)
+      if( timeToReadDht)
       {
-          timeToRead = false;
+          timeToReadDht = false;
           readDht();
       }
 
-      bool movement = digitalRead(MovePin);
-      if(wasMovement != movement)
+      if( timeToReadState )
       {
-          mqtt->Publish("move", movement ? "1" : "0");
-          wasMovement = movement;
+          timeToReadState = false;
+
+          bool movement = digitalRead(MovePin);
+          if(wasMovement != movement)
+          {
+              mqtt->Publish("move", movement ? "1" : "0");
+              wasMovement = movement;
+          }
+
+          bool door = digitalRead(DoorPin);
+          Serial.println(door);
+          if(doorState != door)
+          {
+              mqtt->Publish("door", door ? "1" : "0");
+              doorState = door;
+          }
       }
   }
 
@@ -70,10 +88,15 @@ protected:
       Persist::Inst().Put(K_RELAY, !on);
   }
 
-  static void markTimeToRead()
+  static void markReadDht()
   {
-    _this->timeToRead = true;
-  }  
+    _this->timeToReadDht = true;
+  }
+
+  static void markReadState()
+  {
+    _this->timeToReadState = true;
+  }
 
   void readDht()
   {
@@ -100,9 +123,12 @@ protected:
 private:
     Ticker tickerDht;
     DHT dht;
-    bool timeToRead;
+    bool timeToReadDht;
 
+    Ticker tickerState;
     bool wasMovement;
+    bool doorState;
+    bool timeToReadState;
 };
 
 App* CreateApp(MQTT* mqtt)

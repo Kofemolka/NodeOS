@@ -1,24 +1,27 @@
-var Number havingFan = 0
-var Number forcedFan = 0
+var boolean havingFan = false
+var boolean forcedFan = false
+
+var boolean wasMovement = false
+var Timer afterVisitTimer
 
 rule "BathAutoFan"
 when
     Time cron "0/10 * * * * ?"   //every 10 secs
 then
-    if(havingFan == 0)
+    if(!havingFan)
     {
     		if(Bath_hum.state > 70)
     		{
     		    sendCommand(Bath_fan, ON)
-    		    havingFan = 1
+    		    havingFan = true
     		}
     }
     else
     {
-    		if(Bath_hum.state < 45 && forcedFan == 0)
+    		if(Bath_hum.state < 45 && !forcedFan)
     		{
     		    sendCommand(Bath_fan, OFF)
-    		    havingFan = 0
+    		    havingFan = false
     		}
     }
 end
@@ -28,16 +31,57 @@ when
     Time cron "0 0 1,7,11,18,21 * * ?" //at desired hours
 then
   	sendCommand(Bath_fan, ON)
-    forcedFan = 1
+    forcedFan = true
 end
 
 rule "Ventilate - Off"
 when
     Time cron "0 5 1,7,11,18,21 * * ?" //blow for 5 minutes
 then
-  	if(havingFan == 0)
+  	if(!havingFan)
     {
         sendCommand(Bath_fan, OFF)
     }
-    forcedFan = 0
+    forcedFan = false
 end
+
+rule "Mark Visit"
+when 
+	Item Bath_move changed to ON
+then
+	logDebug("Rules", "Movement detected")	
+	
+	if( !wasMovement && Bath_door.state == "CLOSED" )
+	{		
+		wasMovement = true
+		logDebug("Rules", "Some one is doing bad things...")
+	}
+end
+
+rule "After Visit"
+when
+	Item Bath_door changed to OPEN
+then
+	logDebug("Rules", "Farewell")
+	
+	if( wasMovement )
+	{
+		logDebug("Rules", "Blowing out crime scene")
+		sendCommand(Bath_fan, ON)
+    	forcedFan = true
+    	
+    	afterVisitTimer = createTimer(now.plusMinutes(1)) [|    		
+                if(afterVisitTimer!=null) {
+	                afterVisitTimer.cancel
+	                afterVisitTimer = null
+	            } 
+	            if(!havingFan)
+			    {
+			        sendCommand(Bath_fan, OFF)
+			    }
+			    forcedFan = false
+			    wasMovement = false
+            ]
+	}
+end
+	

@@ -4,7 +4,8 @@ Number Main_room_hum "Hum [%.1f %%]" {mqtt="<[RPI:13113F/hum:state:default]"}
 Number Bath_temp "Temp [%.1f °C]" {mqtt="<[RPI:131DA0/temp:state:default]"}
 Number Bath_hum "Hum [%.1f %%]" {mqtt="<[RPI:131DA0/hum:state:default]"}
 Switch Bath_fan {mqtt=">[RPI:131DA0/fan:command:ON:1],>[RPI:131DA0/fan:command:OFF:0]"}
-Switch Bath_move {mqtt="<[RPI:131DA0/move:command:ON:1],<[RPI:131DA0/move:command:OFF:0]"}
+String Bath_move "[%s]" {mqtt="<[RPI:131DA0/move:command:ON:1],<[RPI:131DA0/move:command:OFF:0]"}
+String Bath_door "[%s]" {mqtt="<[RPI:131DA0/door:command:CLOSED:1],<[RPI:131DA0/door:command:OPEN:0]"}
 
 Switch TV_Switch  {mqtt=">[RPI:13113F/tv:command:*:default]", autoupdate="false"}
 Switch PC_Switch  {wol="192.168.0.255#D4:3D:7E:BA:69:F0", channel="network:device:PC:online" }
