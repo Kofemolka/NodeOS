@@ -1,0 +1,54 @@
+import org.openhab.model.script.actions.Timer
+
+var Timer timer
+var boolean awaitingSilence = false
+
+rule "About to leave"
+when
+  Item Entrance_door changed to CLOSED
+then
+  logDebug("Rules", "Security: Door closed")
+  if(MasterAtHome.state == ON)
+  {
+     awaitingSilence = true
+      timer = createTimer(now.plusSeconds(10)) [|
+            if(awaitingSilence)
+            {
+                logDebug("Rules", "Security: Master left me alone :(")
+                MasterAtHome.postUpdate(OFF)
+            }
+
+            awaitingSilence = false
+        ]
+  }
+end
+
+rule "Wait for silence"
+when
+  Item Entrance_move changed or
+  Item Entrance_door changed to OPEN
+then
+  logDebug("Rules", "Security: Movement detected")
+  if(MasterAtHome.state == ON && awaitingSilence)
+  {
+      logDebug("Rules", "Security: Someone is still here")
+      awaitingSilence= false
+  }
+end
+
+rule "Welcome back"
+when
+  Item Entrance_door changed to OPEN
+then
+  MasterAtHome.postUpdate(ON)
+end
+
+rule "Alarm"
+when
+  Item Entrance_move changed to ON
+then
+  if(MasterAtHome.state == OFF)
+  {
+    pushover("ALARM! Movement detected!")
+  }
+end

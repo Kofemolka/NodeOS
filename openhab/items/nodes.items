@@ -1,15 +1,24 @@
 Group Nodes "Nodes"
-Group 131BB8 (Nodes)
-Group 13113F (Nodes)
-Group 131DA0 (Nodes)
-Group 131C31 (Nodes)
+Group Node_131BB8 (Nodes)
+Group Node_13113F (Nodes)
+Group Node_131DA0 (Nodes)
+Group Node_131C31 (Nodes)
+Group Node_126362 (Nodes)
 
-String 131BB8_Reset "Reset" (131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]", autoupdate="false"}
-String 13113F_Reset "Reset" (13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]", autoupdate="false"}
-String 131DA0_Reset "Reset" (131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
-String 131C31_Reset "Reset" (131C31) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
+String Node_131BB8_Reset "Reset" (Node_131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]", autoupdate="false"}
+String Node_13113F_Reset "Reset" (Node_13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]", autoupdate="false"}
+String Node_131DA0_Reset "Reset" (Node_131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
+String Node_131C31_Reset "Reset" (Node_131C31) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
+String Node_126362_Reset "Reset" (Node_126362) {mqtt=">[RPI:126362/dev/reset:command:*:default]", autoupdate="false"}
 
-Number 131BB8_Heap "Heap [%d]" (131BB8) {mqtt="<[RPI:131BB8/dev/heap:state:default]"}
-Number 13113F_Heap "Heap [%d]" (13113F) {mqtt="<[RPI:13113F/dev/heap:state:default]"}
-Number 131DA0_Heap "Heap [%d]" (131DA0) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
-Number 131C31_Heap "Heap [%d]" (131C31) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
+Number Node_131BB8_Heap "Heap [%d]" (Node_131BB8) {mqtt="<[RPI:131BB8/dev/heap:state:default]"}
+Number Node_13113F_Heap "Heap [%d]" (Node_13113F) {mqtt="<[RPI:13113F/dev/heap:state:default]"}
+Number Node_131DA0_Heap "Heap [%d]" (Node_131DA0) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
+Number Node_131C31_Heap "Heap [%d]" (Node_131C31) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
+Number Node_126362_Heap "Heap [%d]" (Node_126362) {mqtt="<[RPI:126362/dev/heap:state:default]"}
+
+String Node_131BB8_State "[%s]" (Node_131BB8)
+String Node_13113F_State "[%s]" (Node_13113F)
+String Node_131DA0_State "[%s]" (Node_131DA0)
+String Node_131C31_State "[%s]" (Node_131C31)
+String Node_126362_State "[%s]" (Node_126362)

@@ -1,5 +1,14 @@
 sitemap home label="Home"
 {
+    Switch item=MasterAtHome
+    Frame label="Entrance"
+    {
+      Text item=Entrance_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
+      Text item=Entrance_hum icon="humidity"
+      Text item=Entrance_move label="" icon="motion"
+      Text item=Entrance_door label="Door" icon="door"
+    }
+
     Frame label="Kitchen"
     {
         Group item=Catomat
@@ -7,7 +16,12 @@ sitemap home label="Home"
             Switch item=Cat_Mode mappings=[2="Man",1="Auto"]
             Switch item=Cat_Eat mappings=[1="Serve"]
             Switch item=Cat_Drink mappings=[1="Serve"]
-            Text item=Cat_Visit icon="clock"
+
+            Text item=Cat_Visit_Formatted icon="clock"
+
+            Text item=Cat_Last_Meal
+            Text item=Cat_Last_Drink
+
             Setpoint item=Cat_Food_Amount minValue=5 maxValue=50 step=1
             Setpoint item=Cat_Water_Amount minValue=5 maxValue=50 step=1
         }
@@ -31,7 +45,7 @@ sitemap home label="Home"
 
     Frame label="Media"
 	 {
-        	Switch item=TV_Switch label="TV" icon="television" mappings=[ON="On/Off"]
+        	Switch item=TV_Switch label="TV" icon="television"
     		Switch item=Audio_Switch label="Audio" icon="soundvolume" mappings=[ON="On/Off"]
 		    Switch item=PC_Switch label="PC" icon="player"
 
@@ -61,28 +75,36 @@ sitemap home label="Home"
 	{
 		Group item=Nodes icon="settings"
 		{
+        Frame label="Entrance"
+        {
+           Switch item=Node_126362_Reset  icon="network" mappings=[ON="OK"]
+           Text item=Node_126362_State icon=""
+        }
+
         Frame label="Catomat"
         {
-          Switch item=131C31_Reset  icon="network"
-          Text item=131C31_Heap
+          Switch item=Node_131C31_Reset  icon="network" mappings=[ON="OK"]
+          Text item=Node_131C31_State icon=""    
         }
 	      Frame label="RGB"
 	      {
-	        Switch item=131BB8_Reset  icon="network"
-	        Text item=131BB8_Heap          
+	        Switch item=Node_131BB8_Reset  icon="network" mappings=[ON="OK"]
+	        Text item=Node_131BB8_State icon=""
 	      }
 
 	      Frame label="Main Room"
 	      {
-	        Switch item=13113F_Reset  icon="network"
-	        Text item=13113F_Heap
+	        Switch item=Node_13113F_Reset  icon="network" mappings=[ON="OK"]
+	        Text item=Node_13113F_State icon=""
 	      }
 
 	      Frame label="Bath"
 	      {
-				   Switch item=131DA0_Reset  icon="network"
-	         Text item=131DA0_Heap
+				   Switch item=Node_131DA0_Reset  icon="network" mappings=[ON="OK"]
+	         Text item=Node_131DA0_State icon=""
 	      }
+
+
 		}
 	}
 }

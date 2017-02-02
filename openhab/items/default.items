@@ -1,5 +1,13 @@
+Switch MasterAtHome "Master at home"
+
+Number Entrance_temp "Temp [%.1f °C]" {mqtt="<[RPI:126362/temp:state:default]"}
+Number Entrance_hum "Hum [%.1f %%]" {mqtt="<[RPI:126362/hum:state:default]"}
+String Entrance_move "[%s]" {mqtt="<[RPI:126362/move:command:ON:1],<[RPI:126362/move:command:OFF:0]"}
+String Entrance_door "[%s]" {mqtt="<[RPI:126362/door:command:CLOSED:1],<[RPI:126362/door:command:OPEN:0]"}
+
 Number Main_room_temp "Temp [%.1f °C]" {mqtt="<[RPI:13113F/temp:state:default]"}
 Number Main_room_hum "Hum [%.1f %%]" {mqtt="<[RPI:13113F/hum:state:default]"}
+
 
 Number Bath_temp "Temp [%.1f °C]" {mqtt="<[RPI:131DA0/temp:state:default]"}
 Number Bath_hum "Hum [%.1f %%]" {mqtt="<[RPI:131DA0/hum:state:default]"}
@@ -7,8 +15,8 @@ Switch Bath_fan {mqtt=">[RPI:131DA0/fan:command:ON:1],>[RPI:131DA0/fan:command:O
 String Bath_move "[%s]" {mqtt="<[RPI:131DA0/move:command:ON:1],<[RPI:131DA0/move:command:OFF:0]"}
 String Bath_door "[%s]" {mqtt="<[RPI:131DA0/door:command:CLOSED:1],<[RPI:131DA0/door:command:OPEN:0]"}
 
-Switch TV_Switch  {mqtt=">[RPI:13113F/tv:command:*:default]", autoupdate="false"}
-Switch PC_Switch  {wol="192.168.0.255#D4:3D:7E:BA:69:F0", channel="network:device:PC:online" }
+Switch TV_Switch  {mqtt=">[RPI:13113F/tv:command:ON:on], >[RPI:13113F/tv:command:OFF:off]"}
+Switch PC_Switch  {udp=">[OFF:192.168.0.99:9:'MAP(pc.map)']", wol="192.168.0.255#D4:3D:7E:BA:69:F0"}
 
 Group Main_Room_RGB "Backlight"
 

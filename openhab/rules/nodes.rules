@@ -1,0 +1,38 @@
+import org.openhab.core.library.types.*
+import java.util.Date
+import java.text.SimpleDateFormat
+
+rule "Update Node_131BB8"
+when
+    Item Node_131BB8_Heap received update
+then
+    Node_131BB8_State.postUpdate("Heap: " + Node_131BB8_Heap.state + " Online: " + String::format( "%1$tH:%1$tM:%1$tS", new Date() ))
+end
+
+rule "Update Node_13113F"
+when
+    Item Node_13113F_Heap received update
+then
+    Node_13113F_State.postUpdate("Heap: " + Node_13113F_Heap.state + " Online: " + String::format( "%1$tH:%1$tM:%1$tS", new Date() ))
+end
+
+rule "Update Node_131DA0"
+when
+    Item Node_131DA0_Heap received update
+then
+    Node_131DA0_State.postUpdate("Heap: " + Node_131DA0_Heap.state + " Online: " + String::format( "%1$tH:%1$tM:%1$tS", new Date() ))
+end
+
+rule "Update Node_131C31"
+when
+    Item Node_131C31_Heap received update
+then
+    Node_131C31_State.postUpdate("Heap: " + Node_131C31_Heap.state + " Online: " + String::format( "%1$tH:%1$tM:%1$tS", new Date() ))
+end
+
+rule "Update Node_126362"
+when
+    Item Node_126362_Heap received update
+then
+    Node_126362_State.postUpdate("Heap: " + Node_126362_Heap.state + " Online: " + String::format( "%1$tH:%1$tM:%1$tS", new Date() ))
+end

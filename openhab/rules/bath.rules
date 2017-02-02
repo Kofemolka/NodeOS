@@ -46,15 +46,15 @@ then
 end
 
 rule "Mark Visit"
-when 
+when
 	Item Bath_move changed to ON
 then
-	logDebug("Rules", "Movement detected")	
-	
+	logDebug("Rules", "Bath: Movement detected")
+
 	if( !wasMovement && Bath_door.state == "CLOSED" )
-	{		
+	{
 		wasMovement = true
-		logDebug("Rules", "Some one is doing bad things...")
+		logDebug("Rules", "Bath: Some one is doing bad things...")
 	}
 end
 
@@ -63,18 +63,18 @@ when
 	Item Bath_door changed to OPEN
 then
 	logDebug("Rules", "Farewell")
-	
+
 	if( wasMovement )
 	{
-		logDebug("Rules", "Blowing out crime scene")
+		logDebug("Rules", "Bath: Blowing out crime scene")
 		sendCommand(Bath_fan, ON)
     	forcedFan = true
-    	
-    	afterVisitTimer = createTimer(now.plusMinutes(1)) [|    		
+
+    	afterVisitTimer = createTimer(now.plusMinutes(1)) [|
                 if(afterVisitTimer!=null) {
 	                afterVisitTimer.cancel
 	                afterVisitTimer = null
-	            } 
+	            }
 	            if(!havingFan)
 			    {
 			        sendCommand(Bath_fan, OFF)
@@ -84,4 +84,13 @@ then
             ]
 	}
 end
-	
+
+rule "Dont forget the door"
+when
+  Item MasterAtHome changed to OFF
+then
+  if(Bath_door.state == "CLOSED")
+  {
+    pushover("Warning! Bath door is closed")
+  }
+end

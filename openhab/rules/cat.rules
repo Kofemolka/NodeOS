@@ -1,0 +1,28 @@
+import java.util.Date
+import java.text.SimpleDateFormat
+
+rule "Food served"
+when
+    Item Cat_ack received update
+then
+    var String Timestamp = String::format( "%1$tH:%1$tM:%1$tS", new Date() )
+    if(Cat_ack.state == "1")
+    {
+        Cat_Last_Meal.postUpdate(Timestamp)
+        pushover("Cat feeding time")
+    }
+
+    if(Cat_ack.state == "2")
+    {
+        Cat_Last_Drink.postUpdate(Timestamp)
+        pushover("Cat drinking time")
+    }
+end
+
+rule "Visit"
+when
+    Item Cat_Visit received update
+then
+    var String Timestamp = String::format( "%1$tH:%1$tM:%1$tS", new Date() )
+    Cat_Visit_Formatted.postUpdate(Timestamp + " (" + Cat_Visit.state + "sec)")
+end

@@ -78,11 +78,22 @@ protected:
 
   void onTvMsg(const String& d)
   {
-    for(int i=0; i<15;i++)
+    if(d == "on")
     {
-      irsend.sendPanasonic(0x4004, 0x0100BCBD);
-      delayMicroseconds(30000);
-    }  
+      for(int i=0; i<15;i++)
+      {
+        irsend.sendPanasonic(0x4004, 0x0100BCBD);
+        delayMicroseconds(30000);
+      }
+    }
+    else
+    {
+      for(int i=0; i<3;i++)
+      {
+        irsend.sendPanasonic(0x4004, 0x0100BCBD);
+        delayMicroseconds(30000);
+      }
+    }
   }
 
   void onAudioMsg(const String& d)
