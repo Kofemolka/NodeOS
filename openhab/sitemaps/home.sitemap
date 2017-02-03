@@ -1,17 +1,45 @@
 sitemap home label="Home"
 {
-    Switch item=MasterAtHome
-    Frame label="Entrance"
+    Frame label="Security"
     {
-      Text item=Entrance_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
-      Text item=Entrance_hum icon="humidity"
-      Text item=Entrance_move label="" icon="motion"
-      Text item=Entrance_door label="Door" icon="door"
+        Switch item=MasterAtHome
+    }
+
+    Frame label="Media"
+    {
+        Switch item=CinemaSwitch
+        Switch item=Audio_Volume icon="soundvolume-100" mappings=[DOWN="-", UP="+"]
+
+        Switch item=TV_Switch label="TV" icon="television"
+        Switch item=Audio_Switch icon="soundvolume_mute"
+        Switch item=Main_Room_RGB_State label="Backlight" icon="slider"
+        Switch item=PC_Switch label="PC" icon="player"
+
+        Group item=Audio icon="soundvolume"
+        {
+              Switch item=Audio_Switch icon="soundvolume_mute"
+              Switch item=Audio_Volume icon="soundvolume-100" mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Front   mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Center  mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Rear    mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Sub     mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Treble  mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Bass    mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Reset   mappings=[CMD="OK"]
+              Switch item=Audio_Mode    mappings=[5.1="5.1", PC="PC", AUX="AUX"]
+        }
+
+        Group item=Main_Room_RGB icon="rgb"
+        {
+            Switch item=Main_Room_RGB_State label="Backlight" icon="slider"
+            Selection item=Main_Room_RGB_Mode label="Mode" icon="smiley" mappings=[clr="Color", run="Run", pulse="Pulse"]
+            Colorpicker item=Main_Room_RGB_Color label="Color"
+        }
     }
 
     Frame label="Kitchen"
     {
-        Group item=Catomat
+        Group item=Catomat icon="cat"
         {
             Switch item=Cat_Mode mappings=[2="Man",1="Auto"]
             Switch item=Cat_Eat mappings=[1="Serve"]
@@ -26,6 +54,16 @@ sitemap home label="Home"
             Setpoint item=Cat_Water_Amount minValue=5 maxValue=50 step=1
         }
     }
+
+    Frame label="Entrance"
+    {
+      Text item=Entrance_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
+      Text item=Entrance_hum icon="humidity"
+      Text item=Entrance_move label="" icon="motion"
+      Text item=Entrance_door label="Door" icon="door"
+    }
+
+
     Frame label="Room"
 	  {
         Text item=Main_room_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
@@ -43,33 +81,7 @@ sitemap home label="Home"
 
 
 
-    Frame label="Media"
-	 {
-        	Switch item=TV_Switch label="TV" icon="television"
-    		Switch item=Audio_Switch label="Audio" icon="soundvolume" mappings=[ON="On/Off"]
-		    Switch item=PC_Switch label="PC" icon="player"
 
-    		Group item=Audio icon="soundvolume"
-    		{
-		          Switch item=Audio_Switch icon="soundvolume_mute" mappings=[ON="On/Off"]
-		    	  Switch item=Audio_Volume icon="soundvolume-100" mappings=[DOWN="-", UP="+"]
-		          Switch item=Audio_Front   mappings=[DOWN="-", UP="+"]
-		          Switch item=Audio_Center  mappings=[DOWN="-", UP="+"]
-		          Switch item=Audio_Rear    mappings=[DOWN="-", UP="+"]
-		          Switch item=Audio_Sub     mappings=[DOWN="-", UP="+"]
-		          Switch item=Audio_Treble  mappings=[DOWN="-", UP="+"]
-		          Switch item=Audio_Bass    mappings=[DOWN="-", UP="+"]
-		          Switch item=Audio_Reset   mappings=[CMD="OK"]
-		          Switch item=Audio_Mode    mappings=[5.1="5.1", PC="PC", AUX="AUX"]
-    		}
-
-    		Group item=Main_Room_RGB icon="rgb"
-    		{
-    			Switch item=Main_Room_RGB_State label="Backlight" icon="slider"
-    			Selection item=Main_Room_RGB_Mode label="Mode" icon="smiley" mappings=[clr="Color", run="Run", pulse="Pulse"]
-    			Colorpicker item=Main_Room_RGB_Color label="Color"
-    		}
-    }
 
 	Frame label="System"
 	{
@@ -84,7 +96,7 @@ sitemap home label="Home"
         Frame label="Catomat"
         {
           Switch item=Node_131C31_Reset  icon="network" mappings=[ON="OK"]
-          Text item=Node_131C31_State icon=""    
+          Text item=Node_131C31_State icon=""
         }
 	      Frame label="RGB"
 	      {

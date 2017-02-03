@@ -1,0 +1,17 @@
+rule "Cinema On"
+when
+    Item CinemaSwitch received command
+then
+    if(TV_Switch.state != receivedCommand)
+    {
+        TV_Switch.sendCommand(receivedCommand)
+    }
+    if(Audio_Switch.state != receivedCommand)
+    {
+        Audio_Switch.sendCommand(receivedCommand)
+    }
+    if(Main_Room_RGB_State.state != receivedCommand)
+    {
+        Main_Room_RGB_State.sendCommand(receivedCommand)
+    }
+end

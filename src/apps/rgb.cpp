@@ -59,6 +59,13 @@ public:
       _mode = Persist::Inst().Get(K_MODE, _mode);
 
       setState(_state);
+
+      audioSig = 0;
+      audioSigCount = 0;
+      audioOn = false;
+      initialSend = false;
+      updateAudio = false;
+      sendAudio = false;
   }
 
   void Init()
@@ -67,10 +74,15 @@ public:
     pinMode(G, OUTPUT);
     pinMode(B, OUTPUT);
 
+    pinMode(A0, INPUT);
+
     mqtt->Subscribe("rgb", [=](const String& d) { this->onRgbMsg(d); });
     mqtt->Subscribe("hsb", [=](const String& d) { this->onHsbMsg(d); });
     mqtt->Subscribe("mode", [=](const String& d) { this->onModeMsg(d); });
     mqtt->Subscribe("state", [=](const String& d) { this->onStateMsg(d); });
+
+    audioTicker.attach_ms(100, RgbApp::audioTick);
+    audioSendTicker.attach(2, RgbApp::audioSendTick);
   }
 
   void Loop()
@@ -105,6 +117,18 @@ public:
 
           setRGB(hsv2rgb(_pulserClr));
       }
+
+      if(updateAudio)
+      {
+        processAudio();
+        updateAudio = false;
+      }
+
+      if(sendAudio)
+      {
+          doSendAudio();
+          sendAudio = false;
+      }
   }
 
   void Shutdown()
@@ -113,6 +137,43 @@ public:
   }
 
 private:
+  static void audioTick()
+  {
+     _this->updateAudio = true;
+  }
+
+  static void audioSendTick()
+  {
+      _this->sendAudio = true;
+  }
+
+  void processAudio()
+  {
+      audioSig += analogRead(A0);
+      audioSigCount++;
+  }
+
+  void doSendAudio()
+  {
+       if(audioSigCount > 0)
+       {
+          unsigned long averSig = audioSig/audioSigCount;
+          const int minSig = 900;
+          bool isAudioOn = averSig < minSig;
+          bool needToSend = !initialSend || isAudioOn != audioOn;
+          if(needToSend)
+          {
+            mqtt->Publish("audio", isAudioOn ? "ON" : "OFF" , isAudioOn);
+            initialSend = true;
+          }
+
+          audioOn = isAudioOn;
+       }
+
+       audioSig = 0;
+       audioSigCount = 0;
+  }
+
   void onStateMsg(const String& d)
   {
       if(d == "on")
@@ -353,6 +414,15 @@ private:
   HSV _pulserClr;
   float _pulserDelta;
   bool updatePulser;
+
+  unsigned long audioSig;
+  unsigned long audioSigCount;
+  bool audioOn;
+  bool initialSend;
+  bool updateAudio;
+  bool sendAudio;
+  Ticker audioTicker;
+  Ticker audioSendTicker;
 };
 
 App* CreateApp(MQTT* mqtt)

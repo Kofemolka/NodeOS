@@ -25,7 +25,7 @@ public:
         mqtt->Subscribe("adj/food", [=](const String& d) { this->onAdjFood(d); });
         mqtt->Subscribe("adj/water", [=](const String& d) { this->onAdjWater(d); });
 
-        Wire.begin(D1, D2);
+        Wire.begin(D1, D2, );
     }
 
     void Loop()
