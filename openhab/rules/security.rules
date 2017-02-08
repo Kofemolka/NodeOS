@@ -49,6 +49,6 @@ when
 then
   if(MasterAtHome.state == OFF)
   {
-    pushover("ALARM! Movement detected!")
+    notifyMyAndroid("ALARM", "Movement detected!")
   }
 end

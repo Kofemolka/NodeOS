@@ -22,7 +22,7 @@ namespace Silencer
         const string logSource = "Silencer";
         public Silencer()
         {
-            InitializeComponent();         
+            InitializeComponent();
 
             if (!EventLog.SourceExists(logSource))
                 EventLog.CreateEventSource(logSource, "Application");
@@ -46,7 +46,7 @@ namespace Silencer
                    if(stringData == "GoToSlEeP")
                    {
                        EventLog.WriteEntry(logSource, "Going to Sleep");
-                       SetSuspendState(false, true, true);                       
+                       SetSuspendState(false, true, false);                       
                    }
                }
            }, tokenSource.Token);
@@ -58,6 +58,6 @@ namespace Silencer
         }
 
         private Task _listener;
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();        
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
     }
 }

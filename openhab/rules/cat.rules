@@ -9,13 +9,13 @@ then
     if(Cat_ack.state == "1")
     {
         Cat_Last_Meal.postUpdate(Timestamp)
-        pushover("Cat feeding time")
+        notifyMyAndroid("Catomat", "Feeding")
     }
 
     if(Cat_ack.state == "2")
     {
         Cat_Last_Drink.postUpdate(Timestamp)
-        pushover("Cat drinking time")
+        notifyMyAndroid("Catomat", "Drinking")
     }
 end
 

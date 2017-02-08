@@ -2,38 +2,38 @@ sitemap home label="Home"
 {
     Frame label="Security"
     {
-        Switch item=MasterAtHome
+        Switch item=MasterAtHome icon="chef"
     }
 
     Frame label="Media"
     {
-        Switch item=CinemaSwitch
-        Switch item=Audio_Volume icon="soundvolume-100" mappings=[DOWN="-", UP="+"]
+        Switch item=CinemaSwitch icon="power"
+        Switch item=Audio_Volume icon="volume_slider" mappings=[DOWN="-", UP="+"]
 
-        Switch item=TV_Switch label="TV" icon="television"
-        Switch item=Audio_Switch icon="soundvolume_mute"
-        Switch item=Main_Room_RGB_State label="Backlight" icon="slider"
-        Switch item=PC_Switch label="PC" icon="player"
+        Switch item=TV_Switch label="TV" icon="monitor"
+        Switch item=Audio_Switch icon="power"
+        Switch item=Main_Room_RGB_State label="Backlight" icon="light_bulb"
+        Switch item=PC_Switch label="PC" icon="desktop"
 
-        Group item=Audio icon="soundvolume"
+        Group item=Audio icon="mixer"
         {
-              Switch item=Audio_Switch icon="soundvolume_mute"
-              Switch item=Audio_Volume icon="soundvolume-100" mappings=[DOWN="-", UP="+"]
-              Switch item=Audio_Front   mappings=[DOWN="-", UP="+"]
-              Switch item=Audio_Center  mappings=[DOWN="-", UP="+"]
-              Switch item=Audio_Rear    mappings=[DOWN="-", UP="+"]
-              Switch item=Audio_Sub     mappings=[DOWN="-", UP="+"]
-              Switch item=Audio_Treble  mappings=[DOWN="-", UP="+"]
-              Switch item=Audio_Bass    mappings=[DOWN="-", UP="+"]
-              Switch item=Audio_Reset   mappings=[CMD="OK"]
-              Switch item=Audio_Mode    mappings=[5.1="5.1", PC="PC", AUX="AUX"]
+              Switch item=Audio_Switch icon="power"
+              Switch item=Audio_Volume icon="volume_slider" mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Front  icon="volume_slider" mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Center icon="volume_slider" mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Rear   icon="volume_slider" mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Sub    icon="volume_slider" mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Treble icon="volume_slider" mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Bass   icon="volume_slider" mappings=[DOWN="-", UP="+"]
+              Switch item=Audio_Reset  icon="" mappings=[CMD="OK"]
+              Switch item=Audio_Mode   icon="gear" mappings=[5.1="5.1", PC="PC", AUX="AUX"]
         }
 
-        Group item=Main_Room_RGB icon="rgb"
+        Group item=Main_Room_RGB icon="light_bulb"
         {
-            Switch item=Main_Room_RGB_State label="Backlight" icon="slider"
-            Selection item=Main_Room_RGB_Mode label="Mode" icon="smiley" mappings=[clr="Color", run="Run", pulse="Pulse"]
-            Colorpicker item=Main_Room_RGB_Color label="Color"
+            Switch item=Main_Room_RGB_State label="Backlight" icon="light_bulb"
+            Selection item=Main_Room_RGB_Mode label="Mode" icon="smile" mappings=[clr="Color", run="Run", pulse="Pulse"]
+            Colorpicker item=Main_Room_RGB_Color label="Color" icon=""
         }
     }
 
@@ -41,17 +41,17 @@ sitemap home label="Home"
     {
         Group item=Catomat icon="cat"
         {
-            Switch item=Cat_Mode mappings=[2="Man",1="Auto"]
-            Switch item=Cat_Eat mappings=[1="Serve"]
-            Switch item=Cat_Drink mappings=[1="Serve"]
+            Switch item=Cat_Mode icon="alarm_clock" mappings=[2="Man",1="Auto"]
+            Switch item=Cat_Eat icon="chicken" mappings=[1="Serve"]
+            Switch item=Cat_Drink icon="water_tap" mappings=[1="Serve"]
 
-            Text item=Cat_Visit_Formatted icon="clock"
+            Text item=Cat_Visit_Formatted icon="mini_clock"
 
-            Text item=Cat_Last_Meal
-            Text item=Cat_Last_Drink
+            Text item=Cat_Last_Meal icon="mini_clock"
+            Text item=Cat_Last_Drink icon="mini_clock"
 
-            Setpoint item=Cat_Food_Amount minValue=5 maxValue=50 step=1
-            Setpoint item=Cat_Water_Amount minValue=5 maxValue=50 step=1
+            Setpoint item=Cat_Food_Amount icon="scale" minValue=5 maxValue=50 step=1
+            Setpoint item=Cat_Water_Amount icon="scale" minValue=5 maxValue=50 step=1
         }
     }
 
@@ -59,8 +59,8 @@ sitemap home label="Home"
     {
       Text item=Entrance_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
       Text item=Entrance_hum icon="humidity"
-      Text item=Entrance_move label="" icon="motion"
-      Text item=Entrance_door label="Door" icon="door"
+      Text item=Entrance_move label="" icon="camera"
+      Text item=Entrance_door label="Door" icon="_door"
     }
 
 
@@ -74,9 +74,9 @@ sitemap home label="Home"
 	  {
       Text item=Bath_temp icon="temperature" valuecolor=[>25="orange",>15="green",<=15="blue"]
       Text item=Bath_hum icon="humidity"
-      Switch item=Bath_fan label="Fan" icon="fan"
-      Text item=Bath_move label="" icon="motion"
-      Text item=Bath_door label="Door" icon="door"
+      Switch item=Bath_fan label="Fan" icon="windmill"
+      Text item=Bath_move label="" icon="camera"
+      Text item=Bath_door label="Door" icon="_door"
     }
 
 
@@ -85,7 +85,7 @@ sitemap home label="Home"
 
 	Frame label="System"
 	{
-		Group item=Nodes icon="settings"
+		Group item=Nodes icon="node"
 		{
         Frame label="Entrance"
         {

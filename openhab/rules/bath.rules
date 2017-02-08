@@ -91,6 +91,6 @@ when
 then
   if(Bath_door.state == "CLOSED")
   {
-    pushover("Warning! Bath door is closed")
+    notifyMyAndroid("Warning", "Bath door is closed")
   }
 end
