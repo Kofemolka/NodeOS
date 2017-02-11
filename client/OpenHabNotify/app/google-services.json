@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "752332550435",
+    "firebase_url": "https://openhab-notify-158312.firebaseio.com",
+    "project_id": "openhab-notify-158312",
+    "storage_bucket": "openhab-notify-158312.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752332550435:android:0dbb4d0902e59754",
+        "android_client_info": {
+          "package_name": "com.shop.kofe.openhabnotify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752332550435-mfmo2or3oou39hmve7g2g711bm71qura.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shop.kofe.openhabnotify",
+            "certificate_hash": "270551894371D4E6A954C2D99D4F587AB9A7148A"
+          }
+        },
+        {
+          "client_id": "752332550435-m19csdocrvbplfbl11v6hd6defilpp87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7XY6SH-lze62u3urFc2LGqT4td6wo-74"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752332550435-m19csdocrvbplfbl11v6hd6defilpp87.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752332550435:android:32dc50ce0485dc03",
+        "android_client_info": {
+          "package_name": "a.c"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752332550435-m19csdocrvbplfbl11v6hd6defilpp87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7XY6SH-lze62u3urFc2LGqT4td6wo-74"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -49,6 +49,6 @@ when
 then
   if(MasterAtHome.state == OFF)
   {
-    notifyMyAndroid("ALARM", "Movement detected!")
+    Notify_Info.sendCommand("ALARM: Movement detected!")
   }
 end

@@ -9,13 +9,13 @@ then
     if(Cat_ack.state == "1")
     {
         Cat_Last_Meal.postUpdate(Timestamp)
-        notifyMyAndroid("Catomat", "Feeding")
+        Notify_Info.sendCommand("Catomat: Feeding")
     }
 
     if(Cat_ack.state == "2")
     {
         Cat_Last_Drink.postUpdate(Timestamp)
-        notifyMyAndroid("Catomat", "Drinking")
+        Notify_Info.sendCommand("Catomat: Drinking")
     }
 end
 

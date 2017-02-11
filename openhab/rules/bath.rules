@@ -91,6 +91,6 @@ when
 then
   if(Bath_door.state == "CLOSED")
   {
-    notifyMyAndroid("Warning", "Bath door is closed")
+    Notify_Info.sendCommand("Warning: Bath door is closed")
   }
 end
