@@ -40,7 +40,7 @@ sitemap home label="Home"
 
     Frame label="Kitchen"
     {
-        Group item=Catomat icon="cat"
+        Group item=gCatomat icon="cat"
         {
             Switch item=Cat_Mode icon="alarm_clock" mappings=[2="Man",1="Auto"]
             Switch item=Cat_Eat icon="chicken" mappings=[1="Serve"]
@@ -80,10 +80,6 @@ sitemap home label="Home"
       Text item=Bath_door label="Door" icon="_door"
     }
 
-
-
-
-
 	Frame label="System"
 	{
 		Group item=Nodes icon="node"
@@ -120,4 +116,32 @@ sitemap home label="Home"
 
 		}
 	}
+
+  Frame label="Statistics"
+  {
+    Group item=gTempSens label="Temperature" icon="chart"
+    {
+      Chart item=gTempSens period=m refresh=30
+    }
+
+    Group item=gHumSens label="Humidity" icon="chart"
+    {
+      Chart item=gHumSens period=m refresh=30
+    }
+
+    Group item=Entrance_move label="Presence" icon="chart"
+    {
+      Chart item=Entrance_move period=m refresh=30
+    }
+
+    Group item=gDoors label="gDoors" icon="chart"
+    {
+      Chart item=gDoors period=m refresh=30
+    }
+
+    Group item=gCatomatStats label="Catomat" icon="chart"
+    {
+      Chart item=gCatomatStats period=m refresh=30
+    }
+  }
 }

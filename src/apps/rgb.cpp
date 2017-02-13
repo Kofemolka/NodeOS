@@ -149,8 +149,11 @@ private:
 
   void processAudio()
   {
-      audioSig += analogRead(A0);
+     int sens = analogRead(A0);
+     Serial.println(sens);
+      audioSig += sens;
       audioSigCount++;
+
   }
 
   void doSendAudio()

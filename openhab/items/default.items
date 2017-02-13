@@ -2,19 +2,24 @@ Switch MasterAtHome "Master at home"
 Switch Alarm_Fire "Fire Alarm"
 
 Group gTempSens "Temperature"
+Group gHumSens "Humidity"
+Group gPresence "Presence"
+Group gMovement "Movement" (gPresence)
+Group gDoors "Doors"      (gPresence)
+
 Group:Number:MAX gAvgTemp "Average Temp [%.1f °C]"
 
-Number Entrance_temp  "Temp [%.1f °C]"  (gTempSens, gAvgTemp)  {mqtt="<[RPI:126362/temp:state:default]"}
-Number Entrance_hum   "Hum [%.1f %%]"               {mqtt="<[RPI:126362/hum:state:default]"}
-String Entrance_move  "[%s]"                        {mqtt="<[RPI:126362/move:command:ON:1],<[RPI:126362/move:command:OFF:0]"}
-String Entrance_door  "[%s]"                       {mqtt="<[RPI:126362/door:command:CLOSED:1],<[RPI:126362/door:command:OPEN:0]"}
+Number Entrance_temp  "Entrance Temp [%.1f °C]"  (gTempSens, gAvgTemp)  {mqtt="<[RPI:126362/temp:state:default]"}
+Number Entrance_hum   "Entrance Hum [%.1f %%]"   (gHumSens)            {mqtt="<[RPI:126362/hum:state:default]"}
+String Entrance_move  "[%s]"                     (gMovement)          {mqtt="<[RPI:126362/move:command:ON:1],<[RPI:126362/move:command:OFF:0]"}
+String Entrance_door  "[%s]"                     (gDoors)  {mqtt="<[RPI:126362/door:command:CLOSED:1],<[RPI:126362/door:command:OPEN:0]"}
 
-Number Main_room_temp "Temp [%.1f °C]"  (gTempSens, gAvgTemp)  {mqtt="<[RPI:13113F/temp:state:default]"}
-Number Main_room_hum  "Hum [%.1f %%]"               {mqtt="<[RPI:13113F/hum:state:default]"}
+Number Main_room_temp "Room Temp [%.1f °C]"  (gTempSens, gAvgTemp)  {mqtt="<[RPI:13113F/temp:state:default]"}
+Number Main_room_hum  "Room Hum [%.1f %%]"   (gHumSens)            {mqtt="<[RPI:13113F/hum:state:default]"}
 
 
-Number Bath_temp      "Temp [%.1f °C]"  (gTempSens, gAvgTemp)  {mqtt="<[RPI:131DA0/temp:state:default]"}
-Number Bath_hum       "Hum [%.1f %%]"               {mqtt="<[RPI:131DA0/hum:state:default]"}
+Number Bath_temp      "Bath Temp [%.1f °C]"  (gTempSens, gAvgTemp)  {mqtt="<[RPI:131DA0/temp:state:default]"}
+Number Bath_hum       "Bath Hum [%.1f %%]"   (gHumSens)            {mqtt="<[RPI:131DA0/hum:state:default]"}
 Switch Bath_fan                                     {mqtt=">[RPI:131DA0/fan:command:ON:1],>[RPI:131DA0/fan:command:OFF:0]"}
-String Bath_move      "[%s]"                     {mqtt="<[RPI:131DA0/move:command:ON:1],<[RPI:131DA0/move:command:OFF:0]"}
-String Bath_door      "[%s]"                         {mqtt="<[RPI:131DA0/door:command:CLOSED:1],<[RPI:131DA0/door:command:OPEN:0]"}
+String Bath_move      "[%s]"                 (gMovement)            {mqtt="<[RPI:131DA0/move:command:ON:1],<[RPI:131DA0/move:command:OFF:0]"}
+String Bath_door      "[%s]"                 (gDoors)        {mqtt="<[RPI:131DA0/door:command:CLOSED:1],<[RPI:131DA0/door:command:OPEN:0]"}

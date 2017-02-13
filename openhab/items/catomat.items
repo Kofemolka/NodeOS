@@ -1,12 +1,13 @@
-Group Catomat "Catomat"
-String Cat_Mode  		"Mode"    				(Catomat) 	{mqtt=">[RPI:131C31/mode:command:*:default], <[RPI:131C31/status/mode:state:default]"}
-String Cat_Eat 			"Eat" 					(Catomat) 	{mqtt=">[RPI:131C31/cmd:command:*:1]", autoupdate="false"}
-String Cat_Drink 		"Drink" 				(Catomat) 	{mqtt=">[RPI:131C31/cmd:command:*:2]", autoupdate="false"}
-Number Cat_Food_Amount 	"Food amount [%d gr]" 	(Catomat) 	{mqtt=">[RPI:131C31/adj/food:command:*:default]"}
-Number Cat_Water_Amount "Water amount [%d ml]"  (Catomat) 	{mqtt=">[RPI:131C31/adj/water:command:*:default]"}
-Number Cat_Visit  		"[%d sec]" 	(Catomat)	{mqtt="<[RPI:131C31/status/visit:state:default]"}
+Group gCatomat "Catomat"
+String Cat_Mode  		"Mode"    				(gCatomat) 	{mqtt=">[RPI:131C31/mode:command:*:default], <[RPI:131C31/status/mode:state:default]"}
+String Cat_Eat 			"Eat" 					(gCatomat) 	{mqtt=">[RPI:131C31/cmd:command:*:1]", autoupdate="false"}
+String Cat_Drink 		"Drink" 				(gCatomat) 	{mqtt=">[RPI:131C31/cmd:command:*:2]", autoupdate="false"}
+Number Cat_Food_Amount 	"Food amount [%d gr]" 	(gCatomat) 	{mqtt=">[RPI:131C31/adj/food:command:*:default]"}
+Number Cat_Water_Amount "Water amount [%d ml]"  (gCatomat) 	{mqtt=">[RPI:131C31/adj/water:command:*:default]"}
+Number Cat_Visit  		"[%d sec]" 	(gCatomat)	{mqtt="<[RPI:131C31/status/visit:state:default]"}
 
-String Cat_ack (Catomat)	{mqtt="<[RPI:131C31/status/ack:state:default]"}
-String Cat_Visit_Formatted  		"Last Visit [%s]" 	(Catomat)
-String Cat_Last_Meal  		"Last Meal [%s]" 	(Catomat)
-String Cat_Last_Drink  		"Last Drink [%s]" 	(Catomat)
+Group gCatomatStats "Catomat Statistics" (gCatomat)
+String Cat_ack (gCatomat)	{mqtt="<[RPI:131C31/status/ack:state:default]"}
+String Cat_Visit_Formatted  (gCatomat, gCatomatStats)		"Last Visit [%s]" 	(Catomat)
+String Cat_Last_Meal  	(gCatomat, gCatomatStats)	"Last Meal [%s]" 	(Catomat)
+String Cat_Last_Drink  	(gCatomat, gCatomatStats)	"Last Drink [%s]" 	(Catomat)
