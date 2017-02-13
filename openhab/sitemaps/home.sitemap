@@ -3,11 +3,12 @@ sitemap home label="Home"
     Frame label="Security"
     {
         Switch item=MasterAtHome icon="chef"
+        Switch item=Alarm_Fire icon="fire"
     }
 
     Frame label="Media"
     {
-        Switch item=CinemaSwitch icon="power"
+        Switch item=CinemaSwitch icon="power" mappings=[ON="On", OFF="Off"]
         Switch item=Audio_Volume icon="volume_slider" mappings=[DOWN="-", UP="+"]
 
         Switch item=TV_Switch label="TV" icon="monitor"
@@ -15,7 +16,7 @@ sitemap home label="Home"
         Switch item=Main_Room_RGB_State label="Backlight" icon="light_bulb"
         Switch item=PC_Switch label="PC" icon="desktop"
 
-        Group item=Audio icon="mixer"
+        Group item=gAudio icon="mixer"
         {
               Switch item=Audio_Switch icon="power"
               Switch item=Audio_Volume icon="volume_slider" mappings=[DOWN="-", UP="+"]

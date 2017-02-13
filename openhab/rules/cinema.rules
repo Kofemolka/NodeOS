@@ -2,6 +2,10 @@ rule "Cinema On"
 when
     Item CinemaSwitch received command
 then
+    logDebug("Rules", "CinemaSwitch received update: " + receivedCommand)
+    logDebug("Rules", "TV_Switch " + TV_Switch.state )
+    logDebug("Rules", "Audio_Switch " + Audio_Switch.state )
+    logDebug("Rules", "Main_Room_RGB_State " + Main_Room_RGB_State.state )
     if(TV_Switch.state != receivedCommand)
     {
         TV_Switch.sendCommand(receivedCommand)

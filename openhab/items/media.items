@@ -1,11 +1,23 @@
-Group Cinema
-Switch TV_Switch  (Cinema) {mqtt=">[RPI:13113F/tv:command:ON:on], >[RPI:13113F/tv:command:OFF:off]"}
+Group gCinema
+Switch TV_Switch  (gCinema) {mqtt=">[RPI:13113F/tv:command:ON:on], >[RPI:13113F/tv:command:OFF:off]"}
 Switch PC_Switch  {udp=">[OFF:192.168.0.99:9:'MAP(pc.map)']", wol="192.168.0.255#D4:3D:7E:BA:69:F0"}
 
-Group Main_Room_RGB "Backlight"
-
-Switch Main_Room_RGB_State (Main_Room_RGB, Cinema)	{mqtt=">[RPI:131BB8/state:command:ON:on],>[RPI:131BB8/state:command:OFF:off]"}
+Group Main_Room_RGB "Backlight Settings"
+Switch Main_Room_RGB_State (Main_Room_RGB, gCinema)	{mqtt=">[RPI:131BB8/state:command:ON:on],>[RPI:131BB8/state:command:OFF:off]"}
 String Main_Room_RGB_Mode  (Main_Room_RGB)	{mqtt=">[RPI:131BB8/mode:command:*:default]"}
 String Main_Room_RGB_Color (Main_Room_RGB)	{mqtt=">[RPI:131BB8/hsb:command:*:default]"}
 
-Switch CinemaSwitch "Cinema"
+Switch CinemaSwitch "Cinema" { autoupdate="false" }
+
+Group gAudio "Audio Settings"
+Switch Audio_Switch  "Audio"    (gAudio, gCinema) {mqtt=">[RPI:13113F/audio:command:*:08E750AF], <[RPI:131BB8/audio:state:default]"}
+String Audio_Volume  "Volume"   (gAudio) {mqtt=">[RPI:13113F/audio:command:UP:08E700FF], >[RPI:13113F/audio:command:DOWN:08E7807F]", autoupdate="false"}
+String Audio_Front   "Front"    (gAudio) {mqtt=">[RPI:13113F/audio:command:UP:08E78877], >[RPI:13113F/audio:command:DOWN:08E728D7]", autoupdate="false"}
+String Audio_Center  "Center"   (gAudio) {mqtt=">[RPI:13113F/audio:command:UP:08E748B7], >[RPI:13113F/audio:command:DOWN:08E7A857]", autoupdate="false"}
+String Audio_Rear    "Rear"     (gAudio) {mqtt=">[RPI:13113F/audio:command:UP:08E7C837], >[RPI:13113F/audio:command:DOWN:08E76897]", autoupdate="false"}
+String Audio_Sub     "Sub"      (gAudio) {mqtt=">[RPI:13113F/audio:command:UP:08E79867], >[RPI:13113F/audio:command:DOWN:08E702FD]", autoupdate="false"}
+String Audio_Treble  "Treble"   (gAudio) {mqtt=">[RPI:13113F/audio:command:UP:08E7F00F], >[RPI:13113F/audio:command:DOWN:08E732CD]", autoupdate="false"}
+String Audio_Bass    "Bass"     (gAudio) {mqtt=">[RPI:13113F/audio:command:UP:08E7E01F], >[RPI:13113F/audio:command:DOWN:08E7708F]", autoupdate="false"}
+
+String Audio_Reset   "Reset"    (gAudio) {mqtt=">[RPI:13113F/audio:command:*:08E718E7]", autoupdate="false"}
+String Audio_Mode    "Mode"     (gAudio) {mqtt=">[RPI:13113F/audio:command:5.1:08E7E817], >[RPI:13113F/audio:command:PC:08E722DD], >[RPI:13113F/audio:command:AUX:08E708F7]"}

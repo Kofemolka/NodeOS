@@ -36,19 +36,40 @@ then
   }
 end
 
-rule "Welcome back"
-when
-  Item Entrance_door changed to OPEN
-then
-  MasterAtHome.postUpdate(ON)
-end
+//rule "Welcome back"
+//when
+//  Item Entrance_door changed to OPEN
+//then
+//  MasterAtHome.postUpdate(ON)
+//end
 
 rule "Alarm"
 when
-  Item Entrance_move changed to ON
+  Item Entrance_move changed to ON or
+  Item Entrance_door changed to OPEN
 then
   if(MasterAtHome.state == OFF)
   {
-    Notify_Info.sendCommand("ALARM: Movement detected!")
+    var String state = "Door: " + Entrance_door.state + " Movement: " + Entrance_move.state
+    Notify_Alarm.sendCommand("Unauthorized access! " + state)
   }
+end
+
+rule "Fire detection"
+when
+  Item gTempSens received update
+then
+    if (MasterAtHome.state == OFF && gTempSens.members.filter(s | s.state > 30).size > 0) {
+        if (Alarm_Fire.state != ON) {
+            logDebug("Rules", "Fire alarm tripped by temperature sensor!")
+            Alarm_Fire.postUpdate(ON)
+        }
+    }
+end
+
+rule "Fire alarm"
+when
+    Item Alarm_Fire received update ON
+then
+    Notify_Alarm.sendCommand("Fire in the hole!")
 end
