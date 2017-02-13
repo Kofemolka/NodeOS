@@ -25,8 +25,7 @@ end
 
 rule "Wait for silence"
 when
-  Item Entrance_move changed or
-  Item Entrance_door changed to OPEN
+  Item Entrance_move changed 
 then
   logDebug("Rules", "Security: Movement detected")
   if(MasterAtHome.state == ON && awaitingSilence)

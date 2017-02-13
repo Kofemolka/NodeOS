@@ -66,6 +66,8 @@ public:
       initialSend = false;
       updateAudio = false;
       sendAudio = false;
+      forceSendCounter = 0;
+      forceSend = false;
   }
 
   void Init()
@@ -145,12 +147,17 @@ private:
   static void audioSendTick()
   {
       _this->sendAudio = true;
+      _this->forceSendCounter++;
+      if(_this->forceSendCounter >= 30)
+      {
+          _this->forceSendCounter = 0;
+          _this->forceSend = true;
+      }
   }
 
   void processAudio()
   {
-     int sens = analogRead(A0);
-     Serial.println(sens);
+      int sens = analogRead(A0);
       audioSig += sens;
       audioSigCount++;
 
@@ -163,11 +170,12 @@ private:
           unsigned long averSig = audioSig/audioSigCount;
           const int minSig = 900;
           bool isAudioOn = averSig < minSig;
-          bool needToSend = !initialSend || isAudioOn != audioOn;
+          bool needToSend = forceSend || !initialSend || isAudioOn != audioOn;
           if(needToSend)
           {
-            mqtt->Publish("audio", isAudioOn ? "ON" : "OFF" , isAudioOn);
+            mqtt->Publish("audio", isAudioOn ? "ON" : "OFF" , true);
             initialSend = true;
+            forceSend = false;
           }
 
           audioOn = isAudioOn;
@@ -424,6 +432,8 @@ private:
   bool initialSend;
   bool updateAudio;
   bool sendAudio;
+  bool forceSend;
+  int forceSendCounter;
   Ticker audioTicker;
   Ticker audioSendTicker;
 };

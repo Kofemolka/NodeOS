@@ -8,6 +8,6 @@ Number Cat_Visit  		"[%d sec]" 	(gCatomat)	{mqtt="<[RPI:131C31/status/visit:stat
 
 Group gCatomatStats "Catomat Statistics" (gCatomat)
 String Cat_ack (gCatomat)	{mqtt="<[RPI:131C31/status/ack:state:default]"}
-String Cat_Visit_Formatted  (gCatomat, gCatomatStats)		"Last Visit [%s]" 	(Catomat)
-String Cat_Last_Meal  	(gCatomat, gCatomatStats)	"Last Meal [%s]" 	(Catomat)
-String Cat_Last_Drink  	(gCatomat, gCatomatStats)	"Last Drink [%s]" 	(Catomat)
+String Cat_Visit_Formatted  		"Last Visit [%s]" 	(gCatomat, gCatomatStats)
+String Cat_Last_Meal  	"Last Meal [%s]" 	(gCatomat, gCatomatStats)	
+String Cat_Last_Drink  		"Last Drink [%s]" 	(gCatomat, gCatomatStats)
