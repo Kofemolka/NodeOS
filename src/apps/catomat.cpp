@@ -3,9 +3,12 @@
 #include <app.h>
 #include <mqtt.h>
 #include <Wire.h>
+#include <Ticker.h>
 
 class CatomatApp : public App
 {
+    static CatomatApp* _this;
+
     static const unsigned char SLAVE_ID = 9;
     static const unsigned char C_MODE = 1;
     static const unsigned char C_CMD = 2;
@@ -15,7 +18,7 @@ public:
     CatomatApp(MQTT* mqtt) :
      App(mqtt)
     {
-
+        _this = this;
     }
 
     void Init()
@@ -25,26 +28,37 @@ public:
         mqtt->Subscribe("adj/food", [=](const String& d) { this->onAdjFood(d); });
         mqtt->Subscribe("adj/water", [=](const String& d) { this->onAdjWater(d); });
 
-        Wire.begin(D1, D2, );
+        timeToRead = false;
+        ticker.attach(2, CatomatApp::markTimeToRead);
+
+        Wire.begin(D1, D2);
+        Wire.setClock(100000);
+        Wire.setClockStretchLimit(1500);
     }
 
     void Loop()
     {
-        Wire.requestFrom(SLAVE_ID, (byte)6);
-
-        byte data[6] = { 0 };
-        if(Wire.available())
+        if(timeToRead)
         {
-            int i = 0;
-            while (Wire.available()) {
-                byte b = Wire.read();
-                if(i<6)
-                {
-                    data[i++] = b;
-                }
-            }
+            timeToRead = false;
 
-            processMsg(data);
+            Wire.requestFrom(SLAVE_ID, (byte)6);
+            //Serial.println("timeToRead");
+            byte data[6] = { 0 };
+            if(Wire.available())
+            {
+                //Serial.println("Reading...");
+                int i = 0;
+                while (Wire.available()) {
+                    byte b = Wire.read();
+                    if(i<6)
+                    {
+                        data[i++] = b;
+                    }
+                }
+
+                processMsg(data);
+            }
         }
     }
 
@@ -53,6 +67,11 @@ public:
 
     }
 private:
+    static void markTimeToRead()
+    {
+      _this->timeToRead = true;
+    }
+
     void onMode(const String& p)
     {
         byte d = p.toInt();
@@ -129,16 +148,28 @@ private:
           case 3: //ack
             mqtt->Publish("status/ack", String(data[3]));
             break;
+          case 4: //ack
+            mqtt->Publish("status/food", String(data[3]));
+            break;
+          case 5: //ack
+            mqtt->Publish("status/water", String(data[3]));
+            break;
           default:
             Serial.printf("Unknown code: %d\n", data[0]);
             return;
         }
     }
+
+private:
+    Ticker ticker;
+    volatile bool timeToRead;
 };
 
 App* CreateApp(MQTT* mqtt)
 {
   return new CatomatApp(mqtt);
 }
+
+CatomatApp* CatomatApp::_this = 0;
 
 #endif
