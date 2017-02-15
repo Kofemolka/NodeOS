@@ -8,7 +8,7 @@ Group Node_126362 (Nodes)
 String Node_131BB8_Reset "Reset" (Node_131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]", autoupdate="false"}
 String Node_13113F_Reset "Reset" (Node_13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]", autoupdate="false"}
 String Node_131DA0_Reset "Reset" (Node_131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
-String Node_131C31_Reset "Reset" (Node_131C31) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
+String Node_131C31_Reset "Reset" (Node_131C31) {mqtt=">[RPI:131C31/dev/reset:command:*:default]", autoupdate="false"}
 String Node_126362_Reset "Reset" (Node_126362) {mqtt=">[RPI:126362/dev/reset:command:*:default]", autoupdate="false"}
 
 Number Node_131BB8_Heap "Heap [%d]" (Node_131BB8) {mqtt="<[RPI:131BB8/dev/heap:state:default]"}
