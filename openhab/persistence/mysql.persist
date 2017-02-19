@@ -23,5 +23,6 @@ Items {
        gHumSens* : strategy = everyChange, restoreOnStartup
        gMovement* : strategy = everyChange, restoreOnStartup
        gDoors* : strategy = everyChange, restoreOnStartup
-       gCatomatStats* : strategy = everyChange, restoreOnStartup
+       gCatomat* : strategy = everyChange, restoreOnStartup
+			 gBacklight* : strategy = everyChange, restoreOnStartup
 }

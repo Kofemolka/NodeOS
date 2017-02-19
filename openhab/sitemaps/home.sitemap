@@ -30,7 +30,7 @@ sitemap home label="Home"
               Switch item=Audio_Mode   icon="gear" mappings=[5.1="5.1", PC="PC", AUX="AUX"]
         }
 
-        Group item=Main_Room_RGB icon="light_bulb"
+        Group item=gBacklight icon="light_bulb"
         {
             Switch item=Main_Room_RGB_State label="Backlight" icon="light_bulb"
             Selection item=Main_Room_RGB_Mode label="Mode" icon="smile" mappings=[clr="Color", run="Run", pulse="Pulse"]
@@ -82,7 +82,7 @@ sitemap home label="Home"
 
 	Frame label="System"
 	{
-		Group item=Nodes icon="node"
+		Group item=gNodes icon="node"
 		{
         Frame label="Entrance"
         {
@@ -112,8 +112,6 @@ sitemap home label="Home"
 				   Switch item=Node_131DA0_Reset  icon="network" mappings=[ON="OK"]
 	         Text item=Node_131DA0_State icon=""
 	      }
-
-
 		}
 	}
 
@@ -127,21 +125,6 @@ sitemap home label="Home"
     Group item=gHumSens label="Humidity" icon="chart"
     {
       Chart item=gHumSens period=m refresh=30
-    }
-
-    Group item=Entrance_move label="Presence" icon="chart"
-    {
-      Chart item=Entrance_move period=m refresh=30
-    }
-
-    Group item=gDoors label="gDoors" icon="chart"
-    {
-      Chart item=gDoors period=m refresh=30
-    }
-
-    Group item=gCatomatStats label="Catomat" icon="chart"
-    {
-      Chart item=gCatomatStats period=m refresh=30
-    }
+    }   
   }
 }

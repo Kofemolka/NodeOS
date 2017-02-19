@@ -1,24 +1,24 @@
-Group Nodes "Nodes"
-Group Node_131BB8 (Nodes)
-Group Node_13113F (Nodes)
-Group Node_131DA0 (Nodes)
-Group Node_131C31 (Nodes)
-Group Node_126362 (Nodes)
+Group gNodes "Nodes" (gAll)
+Group gNode_131BB8 (gNodes)
+Group gNode_13113F (gNodes)
+Group gNode_131DA0 (gNodes)
+Group gNode_131C31 (gNodes)
+Group gNode_126362 (gNodes)
 
-String Node_131BB8_Reset "Reset" (Node_131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]", autoupdate="false"}
-String Node_13113F_Reset "Reset" (Node_13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]", autoupdate="false"}
-String Node_131DA0_Reset "Reset" (Node_131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
-String Node_131C31_Reset "Reset" (Node_131C31) {mqtt=">[RPI:131C31/dev/reset:command:*:default]", autoupdate="false"}
-String Node_126362_Reset "Reset" (Node_126362) {mqtt=">[RPI:126362/dev/reset:command:*:default]", autoupdate="false"}
+String Node_131BB8_Reset "Reset" (gNode_131BB8) {mqtt=">[RPI:131BB8/dev/reset:command:*:default]", autoupdate="false"}
+String Node_13113F_Reset "Reset" (gNode_13113F) {mqtt=">[RPI:13113F/dev/reset:command:*:default]", autoupdate="false"}
+String Node_131DA0_Reset "Reset" (gNode_131DA0) {mqtt=">[RPI:131DA0/dev/reset:command:*:default]", autoupdate="false"}
+String Node_131C31_Reset "Reset" (gNode_131C31) {mqtt=">[RPI:131C31/dev/reset:command:*:default]", autoupdate="false"}
+String Node_126362_Reset "Reset" (gNode_126362) {mqtt=">[RPI:126362/dev/reset:command:*:default]", autoupdate="false"}
 
-Number Node_131BB8_Heap "Heap [%d]" (Node_131BB8) {mqtt="<[RPI:131BB8/dev/heap:state:default]"}
-Number Node_13113F_Heap "Heap [%d]" (Node_13113F) {mqtt="<[RPI:13113F/dev/heap:state:default]"}
-Number Node_131DA0_Heap "Heap [%d]" (Node_131DA0) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
-Number Node_131C31_Heap "Heap [%d]" (Node_131C31) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
-Number Node_126362_Heap "Heap [%d]" (Node_126362) {mqtt="<[RPI:126362/dev/heap:state:default]"}
+Number Node_131BB8_Heap "Heap [%d]" (gNode_131BB8) {mqtt="<[RPI:131BB8/dev/heap:state:default]"}
+Number Node_13113F_Heap "Heap [%d]" (gNode_13113F) {mqtt="<[RPI:13113F/dev/heap:state:default]"}
+Number Node_131DA0_Heap "Heap [%d]" (gNode_131DA0) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
+Number Node_131C31_Heap "Heap [%d]" (gNode_131C31) {mqtt="<[RPI:131DA0/dev/heap:state:default]"}
+Number Node_126362_Heap "Heap [%d]" (gNode_126362) {mqtt="<[RPI:126362/dev/heap:state:default]"}
 
-String Node_131BB8_State "[%s]" (Node_131BB8)
-String Node_13113F_State "[%s]" (Node_13113F)
-String Node_131DA0_State "[%s]" (Node_131DA0)
-String Node_131C31_State "[%s]" (Node_131C31)
-String Node_126362_State "[%s]" (Node_126362)
+String Node_131BB8_State "[%s]" (gNode_131BB8)
+String Node_13113F_State "[%s]" (gNode_13113F)
+String Node_131DA0_State "[%s]" (gNode_131DA0)
+String Node_131C31_State "[%s]" (gNode_131C31)
+String Node_126362_State "[%s]" (gNode_126362)

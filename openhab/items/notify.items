@@ -1,4 +1,6 @@
-String    Notify_Info         (Notification)    { mqtt=">[RPI:openhab/notification/info:state:*:default]" }
-String    Notify_Alert        (Notification)    { mqtt=">[RPI:openhab/notification/alert:state:*:default]" }
-String    Notify_Warn         (Notification)    { mqtt=">[RPI:openhab/notification/warn:state:*:default]" }
-String    Notify_Alarm        (Notification)    { mqtt=">[RPI:openhab/notification/alarm:state:*:default]" }
+Group gNotification (gAll)
+
+String    Notify_Info         (gNotification)    { mqtt=">[RPI:openhab/notification/info:state:*:default]" }
+String    Notify_Alert        (gNotification)    { mqtt=">[RPI:openhab/notification/alert:state:*:default]" }
+String    Notify_Warn         (gNotification)    { mqtt=">[RPI:openhab/notification/warn:state:*:default]" }
+String    Notify_Alarm        (gNotification)    { mqtt=">[RPI:openhab/notification/alarm:state:*:default]" }
