@@ -1,11 +1,13 @@
-1. Fix SSH
+﻿1. Fix SSH
 sudo leafpad /etc/ssh/ssh_config
-sudo leafpad /etc/ssh/ssh_config
+sudo leafpad /etc/ssh/sshd_config
 add this line to the bottom: IPQoS 0x00
 sudo service ssh restart
 
 2. Time zone
-Etc: GMT-2
+>tzselect
+>12 TZ
+>GST-21
 
 3. No-IP
 mkdir /home/pi/noip
@@ -25,9 +27,10 @@ sudo wget http://repo.mosquitto.org/debian/mosquitto-wheezy.list
 sudo apt-get update
 sudo apt-get install mosquitto
 
-/etc/mosquitto/conf.d/default.conf:
-allow_anonymous false
-password_file /etc/mosquitto/conf.d/pass.lst
+sudo mosquitto_passwd -c /etc/mosquitto/passwd nodeos
+sudo nano /etc/mosquitto/conf.d/default.conf
+: allow_anonymous false
+: password_file /etc/mosquitto/conf.d/passwd
 
 5. OpenHAB
 wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' |sudo apt-key add -
@@ -35,10 +38,10 @@ echo 'deb http://dl.bintray.com/openhab/apt-repo2 stable main' | sudo tee /etc/a
 sudo apt-get update
 sudo apt-get install openhab2
 
-sudo systemctl start openhab2.service
-sudo systemctl status openhab2.service
 sudo systemctl daemon-reload
 sudo systemctl enable openhab2.service
+sudo systemctl start openhab2.service
+sudo systemctl status openhab2.service
 
 ---
 File Location:
@@ -80,11 +83,8 @@ wins support = yes
   directory mask=0777
 
 sudo smbpasswd -a openhab
-testparm
-sudo service smbd restart
 sudo systemctl restart smbd.service
 
-sudo apt-get update
 6. NGINX
 sudo apt-get update && sudo apt-get install nginx
 sudo apt-get install openssl
