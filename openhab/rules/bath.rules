@@ -18,7 +18,7 @@ then
     }
     else
     {
-    		if(Bath_hum.state < 45 && !forcedFan)
+    		if(Bath_hum.state < 50 && !forcedFan)
     		{
     		    sendCommand(Bath_fan, OFF)
     		    havingFan = false

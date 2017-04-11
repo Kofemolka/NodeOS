@@ -58,8 +58,6 @@ public:
       _mode = Mode::Clr;
       _mode = Persist::Inst().Get(K_MODE, _mode);
 
-      setState(_state);
-
       audioSig = 0;
       audioSigCount = 0;
       audioOn = false;
@@ -85,6 +83,8 @@ public:
 
     audioTicker.attach_ms(100, RgbApp::audioTick);
     audioSendTicker.attach(2, RgbApp::audioSendTick);
+
+    setState(_state);
   }
 
   void Loop()
@@ -206,7 +206,7 @@ private:
      {
        setMode(_mode);
      }
-     else if(state == Off)
+     else if(state == State::Off)
      {
        runner.detach();
        setRGB( {0,0,0} );
@@ -279,7 +279,10 @@ private:
       Persist::Inst().Put(K_MODE, _mode);
 
       if(_state == State::Off)
+      {
+          setRGB( {0,0,0} );
           return;
+      }
 
       switch(_mode)
       {
